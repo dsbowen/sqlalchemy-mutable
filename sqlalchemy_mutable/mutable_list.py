@@ -18,22 +18,23 @@ class MutableList(Mutable, list):
         return list(self)
     
     def append(self, item):
-        self.changed()
+        self._changed()
         super().append(self._convert(item, self.root))
 
     def extend(self, iterable):
+        self._changed()
         super().extend(self._convert_iterable(iterable))
 
     def remove(self, obj):
-        self.changed()
+        self._changed()
         return super().remove(obj)
 
     def pop(self, index):
-        self.changed()
+        self._changed()
         return super().pop(index)
 
     def sort(self, cmp=None, key=None, reverse=False):
-        self.changed()
+        self._changed()
         super().sort(cmp=cmp, key=key, reverse=reverse)
 
 

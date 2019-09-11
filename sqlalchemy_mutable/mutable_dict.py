@@ -29,19 +29,19 @@ class MutableDict(Mutable, dict):
         super().__setstate__(state)
     
     def clear(self):
-        self.changed()
+        self._changed()
         super().clear()
 
     def pop(self, *key_and_default):
-        self.changed()
+        self._changed()
         return super().pop(*key_and_default)
 
     def popitem(self):
-        self.changed()
+        self._changed()
         return super().popitem()
 
     def update(self, source={}):
-        self.changed()
+        self._changed()
         super().update(source)
 
     def setdefault(self, key, default=None):
