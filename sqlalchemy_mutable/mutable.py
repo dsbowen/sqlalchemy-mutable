@@ -16,6 +16,8 @@ class Mutable(MutableBase):
     2. Change tracking
     3. Attribute and item management (set, get, delete)
     4. State management (for pickling and unpickling)
+    
+    Subclass this to create custom mutable objects.
     """
 
     """1. Register, coerce, and convert tracked types"""    

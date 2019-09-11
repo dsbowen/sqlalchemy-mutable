@@ -1,4 +1,4 @@
-"""sqlalchemy-mutable example with nested mutable objects
+"""sqlalchemy-mutable example with nested iterable mutable objects
 
 Instructions:
 1. Import from sqlalchemy_mutable
@@ -28,7 +28,8 @@ class MyModel(Base):
     # Initialize with Mutable type
     mutable_list = Column(MutableListType) 
     mutable_dict = Column(MutableDictType)
-    query = Query(Session) # Add a query class attribute
+    # Add a query class attribute
+    query = Query(Session) 
     
     def __init__(self):
         # Set mutable column to Mutable object

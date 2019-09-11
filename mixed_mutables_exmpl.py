@@ -1,4 +1,7 @@
-"""sqlalchemy-mutable example with nested mutable objects
+"""sqlalchemy-mutable example with mixed nested mutable types
+
+Note: A generic MutableType can also be treated as a MutableList or
+MutableDict.
 
 Instructions:
 1. Import from sqlalchemy_mutable
@@ -25,8 +28,10 @@ class MyModel(Base):
     __tablename__ = 'mymodel'
     id = Column(Integer, primary_key=True)
     
-    mutable = Column(MutableType) # Initialize with Mutable type
-    query = Query(Session) # Add a query class attribute
+    # Initialize with Mutable type
+    mutable = Column(MutableType)
+    # Add a query class attribute
+    query = Query(Session) 
     
     def __init__(self):
         # Set mutable column to Mutable object

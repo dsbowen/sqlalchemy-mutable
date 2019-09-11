@@ -25,8 +25,10 @@ class MyModel(Base):
     __tablename__ = 'mymodel'
     id = Column(Integer, primary_key=True)
     
-    mutable = Column(MutableType) # Initialize with MutableType
-    query = Query(Session) # Add a query class attribute
+    # Initialize with MutableType
+    mutable = Column(MutableType) 
+    # Add a query class attribute
+    query = Query(Session) 
     
     def __init__(self):
         self.mutable = Mutable() # Set mutable column to Mutable object
