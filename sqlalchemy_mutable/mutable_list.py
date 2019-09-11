@@ -23,7 +23,7 @@ class MutableList(Mutable, list):
         super().append(self._convert(item, self.root))
 
     def extend(self, iterable):
-        super().extend(self.convert_iterable(iterable))
+        super().extend(self._convert_iterable(iterable))
 
     def remove(self, obj):
         self.changed()
@@ -36,3 +36,18 @@ class MutableList(Mutable, list):
     def sort(self, cmp=None, key=None, reverse=False):
         self.changed()
         super().sort(cmp=cmp, key=key, reverse=reverse)
+
+
+class MutableListType(PickleType):
+    """Mutable list database type"""
+    @classmethod
+    def coerce(cls, key, obj):
+        """Object must be list"""
+        if isinstance(obj, cls):
+            return obj
+        if isinstance(obj, list):
+            return cls(obj)
+        return super().coerce(obj)
+
+
+MutableList.associate_with(MutableListType)

@@ -9,7 +9,7 @@ Instructions:
 """
 
 # Import from sqlalchemy_mutable
-from sqlalchemy_mutable import Mutable, MutableType, Query
+from sqlalchemy_mutable import MutableListType, Query
 
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -25,11 +25,11 @@ class MyModel(Base):
     __tablename__ = 'mymodel'
     id = Column(Integer, primary_key=True)
     
-    mutable = Column(MutableType) # Initialize with MutableType
+    mutable_list = Column(MutableListType) # Initialize with MutableType
     query = Query(Session) # Add a query class attribute
     
     def __init__(self):
-        self.mutable = Mutable() # Set mutable column to Mutable object
+        self.mutable_list = [] # Set mutable column to Mutable object
 
 
 Base.metadata.create_all(engine)
@@ -40,11 +40,13 @@ session.add_all([x,y])
 # Flush or commit a model before embedding it in a mutable object
 session.flush([x,y])
 
-x.mutable.y = y
+x.mutable_list.append(y)
 session.commit()
-print('Successfully recovered y?', x.mutable.y == y)
+print('Mutable list is', x.mutable_list)
+print('Successfully recovered y?', x.mutable_list[0] == y)
 
-x.mutable.nested_mutable = Mutable()
-x.mutable.nested_mutable.y = y
+x.mutable_list.append([])
+x.mutable_list[1].append(y)
 session.commit()
-print('Successfully recovered y?', x.mutable.nested_mutable.y == y)
+print('Mutable list is', x.mutable_list)
+print('Successfully recovered y?', x.mutable_list[1][0] == y)
