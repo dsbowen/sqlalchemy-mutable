@@ -73,12 +73,9 @@ class Mutable(MutableBase):
         return hasattr(obj, '__table__')
     
     """2. Change tracking"""
-    def __init__(
-            self, root=None, tracked_attr_names=(), tracked_item_keys=(),
-            *args, **kwargs):
+    def __init__(self, root=None, *args, **kwargs):
         self.root = root
-        self._tracked_attr_names = set(tracked_attr_names)
-        self._tracked_item_keys = set(tracked_item_keys)
+        self._tracked_attr_names = set()
         super().__init__(*args, **kwargs)
     
     @property
@@ -104,8 +101,8 @@ class Mutable(MutableBase):
         """Return a list of all tracked children (attributes and items)"""
         tracked_children = [
             self.__getattribute__(name) for name in self._tracked_attr_names]
-        tracked_children.extend([
-            self.__getitem__(key) for key in self._tracked_item_keys])
+        if hasattr(self, '_tracked_items'):
+            tracked_children.extend(self._tracked_items)
         return tracked_children
     
     def _set_root(self, root=None):
@@ -145,7 +142,6 @@ class Mutable(MutableBase):
     
     def __setitem__(self, key, obj):
         self._changed()
-        self._tracked_item_keys.add(key)
         super().__setitem__(key, self._convert(obj, self.root))
     
     def __getitem__(self, key):
@@ -156,7 +152,6 @@ class Mutable(MutableBase):
     
     def __delitem__(self, key):
         self._changed()
-        self._tracked_item_keys.remove(key)
         super().__delitem__(key)
     
     """4. State management (for pickling and unpickling)"""

@@ -9,14 +9,17 @@ from sqlalchemy.types import PickleType
 
 @Mutable.register_tracked_type(list)
 class MutableList(Mutable, list):
-    def __init__(self, iterable=(), root=None):
+    def __init__(self, source=(), root=None):
         self.root = root
-        tracked_item_indices = range(len(iterable))
-        super().__init__(
-            root, (), tracked_item_indices, self._convert_iterable(iterable))
+        super().__init__(root, self._convert_iterable(source))
         
     def _convert_iterable(self, iterable):
+        """Convert items in iterable to Mutable objects"""
         return (self._convert(item, self.root) for item in iterable)
+    
+    @property
+    def _tracked_items(self):
+        return list(self)
     
     def append(self, item):
         self.changed()

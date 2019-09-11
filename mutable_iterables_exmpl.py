@@ -2,14 +2,14 @@
 
 Instructions:
 1. Import from sqlalchemy_mutable
-2. Initialize a database column with MutableType
+2. Initialize a database column with Mutable type
 3. Add a query class attribute initialized with scoped_session object
 4. Set mutable column to Mutable object
 5. Flush or commit models before embedding in a Mutable object
 """
 
 # Import from sqlalchemy_mutable
-from sqlalchemy_mutable import MutableListType, Query
+from sqlalchemy_mutable import MutableListType, MutableDictType, Query
 
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -25,11 +25,15 @@ class MyModel(Base):
     __tablename__ = 'mymodel'
     id = Column(Integer, primary_key=True)
     
-    mutable_list = Column(MutableListType) # Initialize with MutableType
+    # Initialize with Mutable type
+    mutable_list = Column(MutableListType) 
+    mutable_dict = Column(MutableDictType)
     query = Query(Session) # Add a query class attribute
     
     def __init__(self):
-        self.mutable_list = [] # Set mutable column to Mutable object
+        # Set mutable column to Mutable object
+        self.mutable_list = []
+        self.mutable_dict = {}
 
 
 Base.metadata.create_all(engine)
@@ -50,3 +54,14 @@ x.mutable_list[1].append(y)
 session.commit()
 print('Mutable list is', x.mutable_list)
 print('Successfully recovered y?', x.mutable_list[1][0] == y)
+
+x.mutable_dict['y'] = y
+session.commit()
+print('Mutable dict is', x.mutable_dict)
+print('Successfully recovered y?', x.mutable_dict['y'] == y)
+
+x.mutable_dict['nested_dict'] = {}
+x.mutable_dict['nested_dict']['y'] = y
+session.commit()
+print('Mutable dict is', x.mutable_dict)
+print('Successfully recovered y?', x.mutable_dict['nested_dict']['y'] == y)
