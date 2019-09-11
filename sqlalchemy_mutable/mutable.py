@@ -25,7 +25,7 @@ class Mutable(MutableBase):
         '_tracked_attr_names', '_tracked_item_keys']
     
     @classmethod
-    def _register_tracked_type(cls, origin_type):
+    def register_tracked_type(cls, origin_type):
         """Decorator for tracked type registration
         
         The origin_type maps to a tracked_type. Origin types will be converted
@@ -73,10 +73,12 @@ class Mutable(MutableBase):
         return hasattr(obj, '__table__')
     
     """2. Change tracking"""
-    def __init__(self, root=None, *args, **kwargs):
+    def __init__(
+            self, root=None, tracked_attr_names=(), tracked_item_keys=(),
+            *args, **kwargs):
         self.root = root
-        self._tracked_attr_names = set()
-        self._tracked_item_keys = set()
+        self._tracked_attr_names = set(tracked_attr_names)
+        self._tracked_item_keys = set(tracked_item_keys)
         super().__init__(*args, **kwargs)
     
     @property
@@ -141,6 +143,22 @@ class Mutable(MutableBase):
         self._tracked_attr_names.remove(name)
         super().__delattr__(name)
     
+    def __setitem__(self, key, obj):
+        self._changed()
+        self._tracked_item_keys.add(key)
+        super().__setitem__(key, self._convert(obj, self.root))
+    
+    def __getitem__(self, key):
+        obj = super().__getitem__(key)
+        if isinstance(obj, ModelShell):
+            return obj.unshell()
+        return obj
+    
+    def __delitem__(self, key):
+        self._changed()
+        self._tracked_item_keys.remove(key)
+        super().__delitem__(key)
+    
     """4. State management (for pickling and unpickling)"""
     def __getstate__(self):
         """Get state for pickling
@@ -155,6 +173,10 @@ class Mutable(MutableBase):
         return state
     
     def __setstate__(self, state):
+        """
+        If self is the root Mutable object, set the root for self 
+        and all tracked Mutable children.
+        """
         isroot = state.pop('isroot', None)
         self.__dict__ = state
         if isroot:
