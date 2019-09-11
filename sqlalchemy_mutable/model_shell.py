@@ -7,6 +7,7 @@ in Mutable objects and MutableType database types
 from sqlalchemy import orm
 from sqlalchemy.inspection import inspect
 
+
 class Query():
     """Query attribute in database model"""
     def __init__(self, scoped_session):
