@@ -12,10 +12,6 @@ class MutableList(Mutable, list):
     def __init__(self, source=(), root=None):
         self.root = root
         super().__init__(root, self._convert_iterable(source))
-        
-    def _convert_iterable(self, iterable):
-        """Convert items in iterable to Mutable objects"""
-        return (self._convert(item, self.root) for item in iterable)
     
     @property
     def _tracked_items(self):

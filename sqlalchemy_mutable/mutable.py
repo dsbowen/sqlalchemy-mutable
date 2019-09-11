@@ -72,6 +72,14 @@ class Mutable(MutableBase):
         """
         return hasattr(obj, '__table__')
     
+    def _convert_iterable(self, iterable):
+        """Convert items in iterable to Mutable objects"""
+        return (self._convert(item, self.root) for item in iterable)
+    
+    def _convert_mapping(self, mapping):
+        """Convert items in dictionary key:item mapping to Mutable objects"""
+        return {key: self._convert(item, self.root) for key, item in mapping}
+    
     """2. Change tracking"""
     def __init__(self, root=None, *args, **kwargs):
         self.root = root
@@ -102,7 +110,7 @@ class Mutable(MutableBase):
         tracked_children = [
             self.__getattribute__(name) for name in self._tracked_attr_names]
         if hasattr(self, '_tracked_items'):
-            tracked_children.extend(self._tracked_items)
+            tracked_children += list(self._tracked_items)
         return tracked_children
     
     def _set_root(self, root=None):

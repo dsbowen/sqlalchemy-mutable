@@ -15,10 +15,6 @@ class MutableDict(Mutable, dict):
         self.root = root
         tracked_item_keys = source.keys()
         super().__init__(root, self._convert_mapping(source))
-    
-    def _convert_mapping(self, mapping):
-        """Convert items in dictionary mapping to Mutable objects"""
-        return {key: self._convert(item, self.root) for key, item in mapping}
         
     @property
     def _tracked_items(self):
