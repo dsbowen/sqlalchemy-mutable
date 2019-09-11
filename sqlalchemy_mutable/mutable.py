@@ -1,4 +1,4 @@
-"""Mutable object base and MutableType database type
+"""Mutable object base class and MutableType database type
 
 Defines the base for (nested) mutable database objects and column type.
 """
@@ -21,11 +21,11 @@ class Mutable(MutableBase):
     """1. Register, coerce, and convert tracked types"""    
     _tracked_type_mapping = {}
     _untracked_attr_names = [
-        'root', '_root', '__dict__', 
+        'root', '_root', '__dict__', '_tracked_type_mapping',
         '_tracked_attr_names', '_tracked_item_keys']
     
     @classmethod
-    def register_tracked_type(cls, origin_type):
+    def _register_tracked_type(cls, origin_type):
         """Decorator for tracked type registration
         
         The origin_type maps to a tracked_type. Origin types will be converted
@@ -39,13 +39,14 @@ class Mutable(MutableBase):
     
     @classmethod
     def coerce(cls, key, obj):
-        converted_obj = cls.convert(obj)
+        """Coercion will succeed if converted object is Mutable"""
+        converted_obj = cls._convert(obj)
         if isinstance(converted_obj, cls):
             return converted_obj
         return super().coerce(key, obj)
     
     @classmethod
-    def convert(cls, obj, root=None):
+    def _convert(cls, obj, root=None):
         """Convert object to tracked type or ModelShell
         
         Cases:
@@ -54,7 +55,7 @@ class Mutable(MutableBase):
         3. Object is Mutable ==> set root and return object
         3. Else ==> return object
         """
-        if cls.object_is_model(obj):
+        if cls._object_is_model(obj):
             return ModelShell(obj)
         tracked_type = cls._tracked_type_mapping.get(type(obj))
         if tracked_type is not None:
@@ -64,7 +65,7 @@ class Mutable(MutableBase):
         return obj
     
     @classmethod
-    def object_is_model(self, obj):
+    def _object_is_model(self, obj):
         """
         Object is assumed to be a database model if it has a __table__ 
         attribute.
@@ -127,7 +128,7 @@ class Mutable(MutableBase):
             return super().__setattr__(name, obj)
         self._changed()
         self._tracked_attr_names.add(name)
-        super().__setattr__(name, self.convert(obj, self.root)) 
+        super().__setattr__(name, self._convert(obj, self.root)) 
 
     def __getattribute__(self, name):
         obj = super().__getattribute__(name)
