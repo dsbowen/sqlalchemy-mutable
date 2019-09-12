@@ -30,7 +30,7 @@ class MyModel(Base):
         # 5. Set mutable column to Mutable object
         self.mutable = Mutable()
 
-
+# 6. Create the database
 Base.metadata.create_all(engine)
 
 """Examples"""

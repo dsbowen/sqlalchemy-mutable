@@ -184,7 +184,7 @@ Users can add mutation tracking to existing classes. The basic steps are:
 3. Define ```__init__``` for the new mutable class. ```__init__``` takes a ```source``` (an instance of the existing class type) and a ```root``` (the ```Mutable``` instance at the root of the nested mutable structure, default to ```None```).
     3.1. Assign the root with ```self.root=root```.
     3.2. Collect the arguments and keyworks arguments of the existing class constructor from ```source```.
-    3.3. Call ```super().__init__(root, <arguments>)``` where the arguments following ```root``` are those you collected in 3.2. This calls the existing class constructor with '<arguments>'.
+    3.3. Call ```super().__init__(root, <arguments>)``` where the arguments following ```root``` are those you collected in 3.2. This calls the existing class constructor with the collected arguments.
 
 You can now treat the existing class as if it were mutable.
 
@@ -228,7 +228,7 @@ hello world
 hello moon
 ```
 
-## Example 5.2: Convert existing classes to mutable classes (advanced use)
+### Example 5.2: Convert existing classes to mutable classes (advanced use)
 
 Notes for converting more complex existing classes to mutable classes:
 1. *Existing class methods take (potentially) mutable arguments*. Convert existing class method arguments to ```Mutable``` objects before passing to the existing class method with ```super().<method>(<converted arguments>)```. ```Mutable``` provides convenience methods for converting arguments:
@@ -276,7 +276,7 @@ Fortunately, I have already defined ```MutableList``` and ```MutableDict``` for 
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License [LICENSE](LICENSE).
 
 ## Acknowledgements
 
