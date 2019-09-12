@@ -78,7 +78,7 @@ Base.metadata.create_all(engine)
 
 ## Examples
 
-See ### link to file on github
+See full examples with [SQLAlchemy](https://github.com/dsbowen/sqlalchemy-mutable/blob/master/examples.py) and [Flask-SQLAlchemy](https://github.com/dsbowen/sqlalchemy-mutable/blob/master/flask_sqlalchemy_examples.py)
 
 ### Example 1: Nested mutation tracking
 
