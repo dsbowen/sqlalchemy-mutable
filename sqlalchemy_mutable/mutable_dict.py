@@ -11,9 +11,8 @@ from sqlalchemy.types import PickleType
 class MutableDict(Mutable, dict):
     _untracked_attr_names = Mutable._untracked_attr_names + ['_mapping']
 
-    def __init__(self, source={}, root=None, **kwargs):
+    def __init__(self, source={}, root=None):
         self.root = root
-        tracked_item_keys = source.keys()
         super().__init__(root, self._convert_mapping(source))
         
     @property
@@ -42,7 +41,7 @@ class MutableDict(Mutable, dict):
 
     def update(self, source={}):
         self._changed()
-        super().update(source)
+        super().update(self._convert_mapping(source))
 
     def setdefault(self, key, default=None):
         if key in self:

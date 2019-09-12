@@ -80,7 +80,8 @@ class Mutable(MutableBase):
     
     def _convert_mapping(self, mapping):
         """Convert items in dictionary key:item mapping to Mutable objects"""
-        return {key: self._convert(item, self.root) for key, item in mapping}
+        return {key: self._convert(item, self.root) 
+            for key, item in mapping.items()}
     
     """2. Change tracking"""
     def __init__(self, root=None, *args, **kwargs):

@@ -1,6 +1,6 @@
 """sqlalchemy-mutable
 
-Support for generic mutable objects and iterables (lists and dictionaries).
+Support for generic nested mutable objects and iterables.
 
 Create custom mutable objects by subclassing Mutable. 
 
