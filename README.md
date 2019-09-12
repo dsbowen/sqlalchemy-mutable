@@ -182,9 +182,9 @@ Users can add mutation tracking to existing classes. The basic steps are:
 1. Create a new mutable class which inherits from ```Mutable``` and the existing class.
 2. Associate the new mutable class with the existing class by registering it using ```@Mutable.register_tracked_type(<Existing Class>)```.
 3. Define ```__init__``` for the new mutable class. ```__init__``` takes a ```source``` (an instance of the existing class type) and a ```root``` (the ```Mutable``` instance at the root of the nested mutable structure, default to ```None```).
-    3.1. Assign the root with ```self.root=root```.
-    3.2. Collect the arguments and keyworks arguments of the existing class constructor from ```source```.
-    3.3. Call ```super().__init__(root, <arguments>)``` where the arguments following ```root``` are those you collected in 3.2. This calls the existing class constructor with the collected arguments.
+    1. Assign the root with ```self.root=root```.
+    2. Collect the arguments and keyworks arguments of the existing class constructor from ```source```.
+    3. Call ```super().__init__(root, <arguments>)``` where the arguments following ```root``` are those you collected in 3.2. This calls the existing class constructor with the collected arguments.
 
 You can now treat the existing class as if it were mutable.
 
