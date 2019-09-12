@@ -20,13 +20,13 @@ $ pip install -U sqlalchemy-mutable
 
 ### Setup
 
-1. Import classes from sqlalchemy_mutable
+Import classes from sqlalchemy_mutable
 
 ```python
 from sqlalchemy_mutable import Mutable, MutableType, Query
 ```
 
-2. Setup the SQLAlchemy [session](https://docs.sqlalchemy.org/en/13/orm/session_basics.html) (standard)
+Setup the SQLAlchemy [session](https://docs.sqlalchemy.org/en/13/orm/session_basics.html) (standard)
 
 ```python
 from sqlalchemy import create_engine, Column, Integer, String
@@ -45,7 +45,7 @@ class MyModel(Base):
     greeting = Column(String)
 ```
 
-3. Initialize a database column with ```MutableType``` (or ```MutableListType``` or ```MutableDictType```)
+Initialize a database column with ```MutableType``` (or ```MutableListType``` or ```MutableDictType```)
 
 ```python
 class MyModel(Base):
@@ -53,7 +53,7 @@ class MyModel(Base):
     mutable = Column(MutableType)
 ```
 
-4. Add a ```query``` class attribute initialized with a [```scoped_session```](https://docs.sqlalchemy.org/en/13/orm/contextual.html#sqlalchemy.orm.scoping.scoped_session) object (skip this step if using with [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/))
+Add a ```query``` class attribute initialized with a [```scoped_session```](https://docs.sqlalchemy.org/en/13/orm/contextual.html#sqlalchemy.orm.scoping.scoped_session) object (skip this step if using with [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/))
 
 ```python
 class MyModel(Base):
@@ -61,7 +61,7 @@ class MyModel(Base):
     query = Query(Session)
 ```
 
-5. Set ```mutable``` column to ```Mutable``` object
+Set ```mutable``` column to ```Mutable``` object
 
 ```python
 class MyModel(Base):
@@ -70,7 +70,7 @@ class MyModel(Base):
         self.mutable = Mutable()
 ```
 
-6. Create the database (standard)
+Create the database (standard)
 
 ```python
 Base.metadata.create_all(engine)
