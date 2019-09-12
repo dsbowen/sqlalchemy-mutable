@@ -32,13 +32,11 @@ from sqlalchemy_mutable import Mutable, MutableType, Query
 class MyModel(Base):
     __tablename__ = 'mymodel'
     id = Column(Integer, primary_key=True)
-    
-    # Initialize with MutableType
     mutable = Column(MutableType)
     # ...
 ```
 
-3. Add a ```query``` class attribute initialized with a [```scoped_session```](https://docs.sqlalchemy.org/en/13/orm/contextual.html#sqlalchemy.orm.scoping.scoped_session) object (skip this step if using with [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/)
+3. Add a ```query``` class attribute initialized with a [```scoped_session```](https://docs.sqlalchemy.org/en/13/orm/contextual.html#sqlalchemy.orm.scoping.scoped_session) object (skip this step if using with [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/))
 
 ```python
 class MyModel(Base):
@@ -110,7 +108,7 @@ Database models may be embedded in the ```Mutable``` object.
 x = MyModel()
 y = MyModel()
 session.add_all([x,y])
-session.flush([x,y]) #Flush or commit models before embedding
+session.flush([x,y]) # Flush or commit models before embedding
 x.mutable.y = y
 session.commit()
 y.greeting = 'hello world'
@@ -164,7 +162,7 @@ Users can add mutation tracking to existing classes.
 1. Existing classes must be registered using ```@Mutable.register_tracked_type(<existing class>)```.
 2. ```__init__``` must be defined to take a ```source``` argument (an instance of the existing class) and a ```root``` argument (the ```Mutable``` object at the root of the nested mutable objects). It begins by setting the root attribute and then calls ```super().__init__(root, *args, **kwargs)``` where ```*args``` and ```**kwargs``` are passed to constructor of the existing class.
 3. If the existing class has mutable items, the new mutable class must have an attribute ```_tracked_items``` which returns a list of items.
-4. Any methods of the existing class which modify the object and *do not* call ```___setattr___``` or ```__getattr__``` must be redefined to begin by calling ```self._changed()```. This registers the change with the root mutable object.
+4. Any methods of the existing class which modify the object and *do not* call ```___setattr___```, ```__delattr__```, ```__setitem__```, or ```__delitem__``` must be redefined to begin by calling ```self._changed()```. This registers the change with the root mutable object.
 
 ```python
 # 1. Register existing type
