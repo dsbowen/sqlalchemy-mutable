@@ -232,9 +232,9 @@ hello moon
 
 Notes for converting more complex existing classes to mutable classes:
 1. *Existing class methods take (potentially) mutable arguments*. Convert existing class method arguments to ```Mutable``` objects before passing to the existing class method with ```super().<method>(<converted arguments>)```. ```Mutable``` provides convenience methods for converting arguments:
-    1.1. ```_convert(object, root=None)``` converts a single object.
-    1.2. ```_convert_iterable(iterable)``` converts iterables like ```list```.
-    1.3. ```_convert_mapping(mapping)``` converts key:value mappings like ```dict```.
+    1. ```_convert(object, root=None)``` converts a single object.
+    2. ```_convert_iterable(iterable)``` converts iterables like ```list```.
+    3. ```_convert_mapping(mapping)``` converts key:value mappings like ```dict```.
 2. *The existing class contains items other than its attributes whose mutations you want to track*. For example, a ```list``` contains potentially mutable items which are not attributes. In this case, the new mutable class must have a ```_tracked_items``` attribute which lists these items.
 3. *The existing class has methods which mutate the object but do not call ```__setattr___```, ```___delattr___```, ```___setitem___```, or ```__delitem__```*. The new mutable class must redefine these methods to call ```self._changed()``` in addition to the existing class method ```super().<method>()```.
 
