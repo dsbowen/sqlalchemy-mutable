@@ -200,3 +200,11 @@ hello world
 ```
 
 Fortunately, I have already defined ```MutableList``` and ```MutableDict``` for you. These classes underlie the functionality in Example 2.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgements
+
+Much inspiration drawn from [SQLAlchemy-JSON](https://pypi.org/project/sqlalchemy-json/)
