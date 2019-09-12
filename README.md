@@ -26,32 +26,54 @@ $ pip install -U sqlalchemy-mutable
 from sqlalchemy_mutable import Mutable, MutableType, Query
 ```
 
-2. Initialize a database column with ```MutableType``` (or ```MutableListType``` or ```MutableDictType```)
+2. Setup the SQLAlchemy [session](https://docs.sqlalchemy.org/en/13/orm/session_basics.html) (standard)
 
 ```python
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.ext.declarative import declarative_base
+
+engine = create_engine('sqlite:///:memory:')
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(session_factory)
+session = Session()
+Base = declarative_base()
+
 class MyModel(Base):
     __tablename__ = 'mymodel'
     id = Column(Integer, primary_key=True)
-    mutable = Column(MutableType)
-    # ...
+    greeting = Column(String)
 ```
 
-3. Add a ```query``` class attribute initialized with a [```scoped_session```](https://docs.sqlalchemy.org/en/13/orm/contextual.html#sqlalchemy.orm.scoping.scoped_session) object (skip this step if using with [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/))
+3. Initialize a database column with ```MutableType``` (or ```MutableListType``` or ```MutableDictType```)
 
 ```python
 class MyModel(Base):
     # ...
-    query = Query(Session) 
-    # ...
+    mutable = Column(MutableType)
 ```
 
-4. Set ```mutable``` column to ```Mutable``` object
+4. Add a ```query``` class attribute initialized with a [```scoped_session```](https://docs.sqlalchemy.org/en/13/orm/contextual.html#sqlalchemy.orm.scoping.scoped_session) object (skip this step if using with [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/))
+
+```python
+class MyModel(Base):
+    # ...
+    query = Query(Session)
+```
+
+5. Set ```mutable``` column to ```Mutable``` object
 
 ```python
 class MyModel(Base):
     # ...
     def __init__(self):
         self.mutable = Mutable()
+```
+
+6. Create the database (standard)
+
+```python
+Base.metadata.create_all(engine)
 ```
 
 ## Examples
@@ -154,31 +176,84 @@ hello world
 hello moon
 ```
 
-### Example 5: Convert existing classes to mutable classes
+### Example 5.1: Convert existing classes to mutable classes (basic use)
 
-Users can add mutation tracking to existing classes.
+Users can add mutation tracking to existing classes. The basic steps are:
+1. Create a new mutable class which inherits from ```Mutable``` and the existing class.
+2. Associate the new mutable class with the existing class by registering it using ```@Mutable.register_tracked_type(<Existing Class>)```.
+3. Define ```__init__``` for the new mutable class. ```__init__``` takes a ```source``` (an instance of the existing class type) and a ```root``` (the ```Mutable``` instance at the root of the nested mutable structure, default to ```None```).
+    3.1. Assign the root with ```self.root=root```.
+    3.2. Collect the arguments and keyworks arguments of the existing class constructor from ```source```.
+    3.3. Call ```super().__init__(root, <arguments>)``` where the arguments following ```root``` are those you collected in 3.2. This calls the existing class constructor with '<arguments>'.
 
-**Notes:**
-1. Existing classes must be registered using ```@Mutable.register_tracked_type(<existing class>)```.
-2. ```__init__``` must be defined to take a ```source``` argument (an instance of the existing class) and a ```root``` argument (the ```Mutable``` object at the root of the nested mutable objects). It begins by setting the root attribute and then calls ```super().__init__(root, *args, **kwargs)``` where ```*args``` and ```**kwargs``` are passed to constructor of the existing class.
-3. If the existing class has mutable items, the new mutable class must have an attribute ```_tracked_items``` which returns a list of items.
-4. Any methods of the existing class which modify the object and *do not* call ```___setattr___```, ```__delattr__```, ```__setitem__```, or ```__delitem__``` must be redefined to begin by calling ```self._changed()```. This registers the change with the root mutable object.
+You can now treat the existing class as if it were mutable.
 
 ```python
-# 1. Register existing type
-@Mutable.register_tracked_type(list) 
-class MutableList(Mutable, list):
-    # 2. Define __init__
+class ExistingClass():
+    def __init__(self, name):
+        self.name = name
+        print('My name is', self.name)
+    
+    def greeting(self):
+        return 'hello {}'.format(self.name)
+
+# 1. Create new mutable class which inherits from Mutable and ExistingClass
+# 2. Registration
+@Mutable.register_tracked_type(ExistingClass)
+class MutableClass(Mutable, ExistingClass):
+    # 3. Initialization
     def __init__(self, source=(), root=None):
         self.root = root
-        super().__init__(root, self._convert_iterable(source))
+        src_name = source.name if hasattr(source, 'name') else None
+        print('source name is', src_name)
+        super().__init__(root, name=src_name)
+        
+x = MyModel()
+session.add(x)
+x.mutable.nested_mutable = ExistingClass('world')
+session.commit()
+print(x.mutable.nested_mutable.greeting())
+x.mutable.nested_mutable.name = 'moon'
+session.commit()
+print(x.mutable.nested_mutable.greeting())
+```
+
+Outputs:
+
+```
+My name is world
+source name is world
+My name is world
+hello world
+hello moon
+```
+
+## Example 5.2: Convert existing classes to mutable classes (advanced use)
+
+Notes for converting more complex existing classes to mutable classes:
+1. *Existing class methods take (potentially) mutable arguments*. Convert existing class method arguments to ```Mutable``` objects before passing to the existing class method with ```super().<method>(<converted arguments>)```. ```Mutable``` provides convenience methods for converting arguments:
+    1.1. ```_convert(object, root=None)``` converts a single object.
+    1.2. ```_convert_iterable(iterable)``` converts iterables like ```list```.
+    1.3. ```_convert_mapping(mapping)``` converts key:value mappings like ```dict```.
+2. *The existing class contains items other than its attributes whose mutations you want to track*. For example, a ```list``` contains potentially mutable items which are not attributes. In this case, the new mutable class must have a ```_tracked_items``` attribute which lists these items.
+3. *The existing class has methods which mutate the object but do not call ```__setattr___```, ```___delattr___```, ```___setitem___```, or ```__delitem__```*. The new mutable class must redefine these methods to call ```self._changed()``` in addition to the existing class method ```super().<method>()```.
+
+```python
+@Mutable.register_tracked_type(list) 
+class MutableList(Mutable, list):
+    def __init__(self, source=(), root=None):
+        self.root = root
+        # 1. Convert existing class constructor arguments to Mutable objects
+        converted_list = self._convert_iterable(source)
+        super().__init__(root, converted_list)
     
-    # 3. _tracked_items attribute
+    # 2. Classes with mutable items must have a _tracked_items attribute
+    # _tracked_items is a list of potentially mutable items
     @property
     def _tracked_items(self):
         return list(self)
     
-    # 4. Call self._changed() to register change with the root Mutable object
+    # 3. Call self._changed() to register change with the root Mutable object
     def append(self, item):
         self._changed()
         super().append(self._convert(item, self.root))

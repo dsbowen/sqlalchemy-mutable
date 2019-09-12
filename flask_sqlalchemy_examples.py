@@ -3,63 +3,58 @@
 """Setup"""
 
 # 1. Import classes from sqlalchemy_mutable
-from sqlalchemy_mutable import Mutable, MutableType, Query
+from sqlalchemy_mutable import Mutable, MutableType
 
 # 2. Standard session creation
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.ext.declarative import declarative_base
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
-engine = create_engine('sqlite:///:memory:')
-session_factory = sessionmaker(bind=engine)
-Session = scoped_session(session_factory)
-session = Session()
-Base = declarative_base()
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-class MyModel(Base):
-    __tablename__ = 'mymodel'
-    id = Column(Integer, primary_key=True)
-    greeting = Column(String)
+class MyModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    greeting = db.Column(db.String)
     
     # 3. Initialize a database column with MutableType
-    mutable = Column(MutableType) 
-    # 4. Add a query class attribute initialized with a scoped_session
-    query = Query(Session) 
+    mutable = db.Column(MutableType)  
     
     def __init__(self):
         # 5. Set mutable column to Mutable object
         self.mutable = Mutable()
 
 
-Base.metadata.create_all(engine)
+db.create_all()
 
 """Examples"""
 
 # Example 1: Nested mutation tracking
 x = MyModel()
-session.add(x)
+db.session.add(x)
 x.mutable.nested_mutable = Mutable()
-session.commit()
+db.session.commit()
 x.mutable.nested_mutable.greeting = 'hello world'
-session.commit()
+db.session.commit()
 print(x.mutable.nested_mutable.greeting)
 
 # Example 2: Mutation tracking for iterables
 x = MyModel()
-session.add(x)
+db.session.add(x)
 x.mutable = {'greeting': []}
-session.commit()
+db.session.commit()
 x.mutable['greeting'].append('hello world')
-session.commit()
+db.session.commit()
 print(x.mutable['greeting'][0])
 
 # Example 3: Embedded database models
 x = MyModel()
 y = MyModel()
-session.add_all([x,y])
-session.flush([x,y]) #Flush or commit models before embedding
+db.session.add_all([x,y])
+db.session.flush([x,y]) #Flush or commit models before embedding
 x.mutable.y = y
-session.commit()
+db.session.commit()
 y.greeting = 'hello world'
 print(x.mutable.y.greeting)
 print('Successfully recovered y?', x.mutable.y == y)
@@ -74,12 +69,12 @@ class CustomMutable(Mutable):
         return 'hello {}'.format(self.name)
 
 x = MyModel()
-session.add(x)
+db.session.add(x)
 x.mutable.nested_mutable = CustomMutable()
-session.commit()
+db.session.commit()
 print(x.mutable.nested_mutable.greeting())
 x.mutable.nested_mutable.name = 'moon'
-session.commit()
+db.session.commit()
 print(x.mutable.nested_mutable.greeting())
 
 # Example 5.1: Convert existing classes to mutable classes (basic use)
@@ -103,12 +98,12 @@ class MutableClass(Mutable, ExistingClass):
         super().__init__(root, name=src_name)
         
 x = MyModel()
-session.add(x)
+db.session.add(x)
 x.mutable.nested_mutable = ExistingClass('world')
-session.commit()
+db.session.commit()
 print(x.mutable.nested_mutable.greeting())
 x.mutable.nested_mutable.name = 'moon'
-session.commit()
+db.session.commit()
 print(x.mutable.nested_mutable.greeting())
 
 # Example 5.2: Convert existing classes to mutable classes (advanced use)
@@ -133,7 +128,7 @@ class MutableList(Mutable, list):
         
 x = MyModel()
 x.mutable.nested_list = []
-session.commit()
+db.session.commit()
 x.mutable.nested_list.append('hello world')
-session.commit()
+db.session.commit()
 print(x.mutable.nested_list[0])
