@@ -45,7 +45,7 @@ class Mutable(MutableBase):
         converted_obj = cls._convert(obj)
         if isinstance(converted_obj, cls):
             return converted_obj
-        return super().coerce(key, obj)
+        return MutableStr(str(obj))
     
     @classmethod
     def _convert(cls, obj, root=None):
@@ -84,6 +84,11 @@ class Mutable(MutableBase):
             for key, item in mapping.items()}
     
     """2. Change tracking"""
+    def __new__(cls, source=None, root=None, *args, **kwargs):
+        if source is None:
+            return super().__new__(cls)
+        return source.__class__.__new__(cls, source)
+    
     def __init__(self, root=None, *args, **kwargs):
         self.root = root
         self._tracked_attr_names = set()
@@ -191,6 +196,12 @@ class Mutable(MutableBase):
 
 class MutableType(PickleType):
     """Mutable database type"""
+
+@Mutable.register_tracked_type(str)
+class MutableStr(Mutable, str):
+    def __init__(self, source=(), root=None):
+        self.root = root
+        super().__init__(root)        
     
 
 Mutable.associate_with(MutableType)

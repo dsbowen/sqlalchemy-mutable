@@ -276,7 +276,7 @@ Fortunately, I have already defined ```MutableList``` and ```MutableDict``` for 
 
 ## License
 
-This project is licensed under the MIT License [LICENSE](LICENSE).
+This project is licensed under the MIT License [LICENSE](https://github.com/dsbowen/sqlalchemy-mutable/blob/master/LICENSE).
 
 ## Acknowledgements
 

@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sqlalchemy-mutable",
-    version="0.0.1",
+    version="0.0.2",
     author="Dillon Bowen",
     author_email="dsbowen@wharton.upenn.edu",
-    description="Generic nested mutable objects and iterables for sqlalchemy",
+    description="Generic nested mutable objects and iterables for SQLAlchemy",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/dsbowen/sqlalchemy-mutable",
