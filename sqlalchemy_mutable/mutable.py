@@ -45,7 +45,7 @@ class Mutable(MutableBase):
         converted_obj = cls._convert(obj)
         if isinstance(converted_obj, cls):
             return converted_obj
-        return MutableStr(str(obj))
+        return super().coerce(cls, obj)
     
     @classmethod
     def _convert(cls, obj, root=None):
@@ -85,14 +85,18 @@ class Mutable(MutableBase):
     
     """2. Change tracking"""
     def __new__(cls, source=None, root=None, *args, **kwargs):
+        """Create new Mutable object
+        
+        Set root and empty tracked attribute names set before calling 
+        constructor.
+        """
         if source is None:
-            return super().__new__(cls)
-        return source.__class__.__new__(cls, source)
-    
-    def __init__(self, root=None, *args, **kwargs):
-        self.root = root
-        self._tracked_attr_names = set()
-        super().__init__(*args, **kwargs)
+            new = super().__new__(cls)
+        else:
+            new = type(source).__new__(cls, source)
+        new.root = root
+        new._tracked_attr_names = set()
+        return new
     
     @property
     def root(self):
@@ -199,9 +203,7 @@ class MutableType(PickleType):
 
 @Mutable.register_tracked_type(str)
 class MutableStr(Mutable, str):
-    def __init__(self, source=(), root=None):
-        self.root = root
-        super().__init__(root)        
+    pass     
     
 
 Mutable.associate_with(MutableType)

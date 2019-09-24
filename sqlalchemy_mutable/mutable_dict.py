@@ -12,8 +12,7 @@ class MutableDict(Mutable, dict):
     _untracked_attr_names = Mutable._untracked_attr_names + ['_mapping']
 
     def __init__(self, source={}, root=None):
-        self.root = root
-        super().__init__(root, self._convert_mapping(source))
+        super().__init__(self._convert_mapping(source))
         
     @property
     def _tracked_items(self):

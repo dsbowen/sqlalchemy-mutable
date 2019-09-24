@@ -9,9 +9,8 @@ from sqlalchemy.types import PickleType
 
 @Mutable.register_tracked_type(list)
 class MutableList(Mutable, list):
-    def __init__(self, source=(), root=None):
-        self.root = root
-        super().__init__(root, self._convert_iterable(source))
+    def __init__(self, source=[], root=None):
+        super().__init__(self._convert_iterable(source))
     
     @property
     def _tracked_items(self):
