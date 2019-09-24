@@ -64,9 +64,9 @@ class Mutable(MutableBase):
         converted_obj = cls._convert(obj)
         if isinstance(converted_obj, cls):
             return converted_obj
-        coerced_type = cls._coerced_type_mapping.get(type(obj))
+        coerced_type = cls._coerced_type_mapping.get(type(converted_obj))
         if coerced_type is not None:
-            return coerced_type(obj)
+            return coerced_type(converted_obj)
         return super().coerce(cls, obj)
     
     @classmethod

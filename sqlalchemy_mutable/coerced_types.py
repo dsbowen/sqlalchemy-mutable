@@ -23,6 +23,6 @@ class CoercedInt(Mutable, int):
 class CoercedStr(Mutable, str):
     pass
 
-@Mutable.register_coerced_type(ModelShell)
-class CoercedModelShell(Mutable, ModelShell):
-    pass
+# @Mutable.register_coerced_type(ModelShell)
+# class CoercedModelShell(Mutable, ModelShell):
+    # pass

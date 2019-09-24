@@ -4,6 +4,8 @@ Defines the classes for (nested) mutable lists.
 """
 
 from .mutable import Mutable
+from .model_shell import ModelShell
+
 from sqlalchemy.types import PickleType
 
 
@@ -18,7 +20,7 @@ class MutableList(Mutable, list):
     
     def append(self, item):
         self._changed()
-        super().append(self._convert(item, self.root))
+        super().append(self._convert_item(item))
 
     def extend(self, iterable):
         self._changed()
@@ -35,6 +37,17 @@ class MutableList(Mutable, list):
     def sort(self, cmp=None, key=None, reverse=False):
         self._changed()
         super().sort(cmp=cmp, key=key, reverse=reverse)
+    
+    def __iter__(self):
+        """Iterator
+        
+        Unshell models on iteration.
+        """
+        for i in super().__iter__():
+            if isinstance(i, ModelShell):
+                yield i.unshell()
+            else:
+                yield i
 
 
 class MutableListType(PickleType):

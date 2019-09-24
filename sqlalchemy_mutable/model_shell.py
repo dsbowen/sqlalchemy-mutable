@@ -30,4 +30,5 @@ class ModelShell():
             return self.model_class.query.get(self.id)
         return (self.model_class, self.id)
     
-    
+    def __eq__(self, obj):
+        return self.unshell() == obj

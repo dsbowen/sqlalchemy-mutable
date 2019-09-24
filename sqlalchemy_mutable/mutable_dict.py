@@ -4,6 +4,8 @@ Defines the classes for (nested) mutable dictionaries.
 """
 
 from .mutable import Mutable
+from .model_shell import ModelShell
+
 from sqlalchemy.types import PickleType
 
 
@@ -51,6 +53,25 @@ class MutableDict(Mutable, dict):
         # the value at self[key] may be a new TrackedObject, 
         # so return self[key] instead of default
         return self[key]
+    
+    def values(self):
+        return self.unshell().values()
+    
+    def items(self):
+        return self.unshell().items()
+    
+    def unshell(self):
+        """Create unshelled copy of dictionary
+        
+        Create a dictionary shallow copy of self. Unshell any models which
+        appear in dictionary values.
+        """
+        unshelled_dict = {}
+        for key, value in super().items():
+            if isinstance(value, ModelShell):
+                value = value.unshell()
+            unshelled_dict[key] = value
+        return unshelled_dict
 
 
 class MutableDictType(PickleType):
