@@ -188,6 +188,8 @@ class Mutable(MutableBase):
         """
         if name in self._untracked_attr_names:
             return super().__setattr__(name, obj)
+        if isinstance(self, ModelShell):
+            return super().__setattr__(name, obj)
         if self._python_type is not None:
             empty = self._python_type.__new__(self._python_type)
             empty.__setattr__(name, obj)

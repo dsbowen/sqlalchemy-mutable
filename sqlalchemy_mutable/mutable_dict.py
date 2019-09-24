@@ -18,7 +18,7 @@ class MutableDict(Mutable, dict):
         
     @property
     def _tracked_items(self):
-        return self.values()
+        return super().values()
     
     def __getstate__(self):
         self._mapping = dict(self)

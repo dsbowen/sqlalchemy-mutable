@@ -23,6 +23,11 @@ class CoercedInt(Mutable, int):
 class CoercedStr(Mutable, str):
     pass
 
-# @Mutable.register_coerced_type(ModelShell)
-# class CoercedModelShell(Mutable, ModelShell):
-    # pass
+@Mutable.register_coerced_type(ModelShell)
+class CoercedModelShell(Mutable, ModelShell):
+    def __new__(cls, source):
+        return super().__new__(cls)
+    
+    def __init__(self, source):
+        self.id = source.id
+        self.model_class = source.model_class
