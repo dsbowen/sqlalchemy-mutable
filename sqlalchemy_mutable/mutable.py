@@ -12,7 +12,7 @@ class Mutable(MutableBase):
     """Base class for (nested) mutable objects
     
     Mutable has the following responsibilities:
-    1. Register, coerce, and convert tracked types
+    1. Register, coerce, and convert types
     2. Change tracking
     3. Attribute and item management (set, get, delete)
     4. State management (for pickling and unpickling)
@@ -20,11 +20,26 @@ class Mutable(MutableBase):
     Subclass this to create custom mutable objects.
     """
 
-    """1. Register, coerce, and convert tracked types"""    
+    """1. Register, coerce, and convert types"""    
+    _coerced_type_mapping = {}
     _tracked_type_mapping = {}
     _untracked_attr_names = [
-        'root', '_root', '__dict__', '_tracked_type_mapping',
+        'root', '_root', '__dict__', '_python_type', 
+        '_coerced_type_mapping', '_tracked_type_mapping',
         '_tracked_attr_names', '_tracked_item_keys']
+    
+    @classmethod
+    def register_coerced_type(cls, origin_type):
+        """Decorator for coerced type registration
+        
+        The origin_type maps to a coerced_type. Origin types will be converted
+        to coerced types using the coerce() method. Origin types will not be
+        converted to coerced types on convert().
+        """
+        def register(coerced_type):
+            cls._coerced_type_mapping[origin_type] = coerced_type
+            return coerced_type
+        return register
     
     @classmethod
     def register_tracked_type(cls, origin_type):
@@ -41,10 +56,17 @@ class Mutable(MutableBase):
     
     @classmethod
     def coerce(cls, key, obj):
-        """Coercion will succeed if converted object is Mutable"""
+        """Coercion
+        
+        If object can be converted to a Mutable object, return the Mutable
+        object. Otherwise, attempt to coerce to coerced_type.
+        """
         converted_obj = cls._convert(obj)
         if isinstance(converted_obj, cls):
             return converted_obj
+        coerced_type = cls._coerced_type_mapping.get(type(obj))
+        if coerced_type is not None:
+            return coerced_type(obj)
         return super().coerce(cls, obj)
     
     @classmethod
@@ -87,13 +109,19 @@ class Mutable(MutableBase):
     def __new__(cls, source=None, root=None, *args, **kwargs):
         """Create new Mutable object
         
-        Set root and empty tracked attribute names set before calling 
-        constructor.
+        Set the _python_type of the source object. This will be used to check
+        that setattr operations are valid.
+        
+        Set root and initialize tracked attribute names set before calling 
+        the constructor.
         """
         if source is None:
             new = super().__new__(cls)
+            new._python_type = None
         else:
+            # For use with Mutable types which subclass Mutable
             new = type(source).__new__(cls, source)
+            new._python_type = type(source)
         new.root = root
         new._tracked_attr_names = set()
         return new
@@ -143,8 +171,22 @@ class Mutable(MutableBase):
     
     """3. Attribute and item management"""
     def __setattr__(self, name, obj):
+        """Set attribute
+        
+        If attribute is untracked, set as normal.
+        
+        If the attribute is tracked and is derived from an original python
+        type, make sure instances of the original python type can set the
+        requested attribute.
+        
+        If so, indicate that self has changed, add the attribute name to the
+        tracked attribute registry, and set the attribute.
+        """
         if name in self._untracked_attr_names:
             return super().__setattr__(name, obj)
+        if self._python_type is not None:
+            empty = self._python_type.__new__(self._python_type)
+            empty.__setattr__(name, obj)
         self._changed()
         self._tracked_attr_names.add(name)
         super().__setattr__(name, self._convert(obj, self.root)) 
@@ -200,10 +242,6 @@ class Mutable(MutableBase):
 
 class MutableType(PickleType):
     """Mutable database type"""
-
-@Mutable.register_tracked_type(str)
-class MutableStr(Mutable, str):
-    pass     
     
 
 Mutable.associate_with(MutableType)

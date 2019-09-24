@@ -67,7 +67,6 @@ print('Successfully recovered y?', x.mutable.y == y)
 # Example 4: ```Mutable``` base for customized mutable classes
 class CustomMutable(Mutable):
     def __init__(self, name='world'):
-        super().__init__() # Begin by calling super().__init__()
         self.name = name
         
     def greeting(self):
@@ -84,9 +83,11 @@ print(x.mutable.nested_mutable.greeting())
 
 # Example 5.1: Convert existing classes to mutable classes (basic use)
 class ExistingClass():
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+
     def __init__(self, name):
         self.name = name
-        print('My name is', self.name)
     
     def greeting(self):
         return 'hello {}'.format(self.name)
@@ -96,21 +97,32 @@ class ExistingClass():
 @Mutable.register_tracked_type(ExistingClass)
 class MutableClass(Mutable, ExistingClass):
     # 3. Initialization
-    def __init__(self, source=(), root=None):
-        self.root = root
+    def __init__(self, source=None, root=None):
         src_name = source.name if hasattr(source, 'name') else None
-        print('source name is', src_name)
-        super().__init__(root, name=src_name)
+        super().__init__(name=src_name)
+    
+    """
+    For custom Mutable classes, MutableClass's __new__ method will be called 
+    before construction with the instance of the ExistingClass passed as the 
+    source.
+    
+    If the __new__ method of the ExistingClass does not accept arguments, 
+    you must define a __new__ method in the MutableClass which does. For example:
+    
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+    """
         
 x = MyModel()
 session.add(x)
+x.mutable = ExistingClass('world')
 x.mutable.nested_mutable = ExistingClass('world')
 session.commit()
 print(x.mutable.nested_mutable.greeting())
 x.mutable.nested_mutable.name = 'moon'
 session.commit()
 print(x.mutable.nested_mutable.greeting())
-
+"""
 # Example 5.2: Convert existing classes to mutable classes (advanced use)
 @Mutable.register_tracked_type(list) 
 class MutableList(Mutable, list):
@@ -137,3 +149,4 @@ session.commit()
 x.mutable.nested_list.append('hello world')
 session.commit()
 print(x.mutable.nested_list[0])
+"""
