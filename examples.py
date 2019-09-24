@@ -107,7 +107,9 @@ class MutableClass(Mutable, ExistingClass):
     source.
     
     If the __new__ method of the ExistingClass does not accept arguments, 
-    you must define a __new__ method in the MutableClass which does. For example:
+    you must define a __new__ method in the MutableClass which does. 
+    
+    Try this first:
     
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
@@ -122,15 +124,14 @@ print(x.mutable.nested_mutable.greeting())
 x.mutable.nested_mutable.name = 'moon'
 session.commit()
 print(x.mutable.nested_mutable.greeting())
-"""
+
 # Example 5.2: Convert existing classes to mutable classes (advanced use)
 @Mutable.register_tracked_type(list) 
 class MutableList(Mutable, list):
-    def __init__(self, source=(), root=None):
-        self.root = root
-        # 1. Convert existing class method arguments to Mutable objects
+    def __init__(self, source=[], root=None):
+        # 1. Convert potentially mutable attributes/items to Mutable objects
         converted_list = self._convert_iterable(source)
-        super().__init__(root, converted_list)
+        super().__init__(converted_list)
     
     # 2. Classes with mutable items must have a _tracked_items attribute
     # _tracked_items is a list of potentially mutable items
@@ -141,7 +142,7 @@ class MutableList(Mutable, list):
     # 3. Call self._changed() to register change with the root Mutable object
     def append(self, item):
         self._changed()
-        super().append(self._convert(item, self.root))
+        super().append(self._convert_item(item))
         
 x = MyModel()
 x.mutable.nested_list = []
@@ -149,4 +150,3 @@ session.commit()
 x.mutable.nested_list.append('hello world')
 session.commit()
 print(x.mutable.nested_list[0])
-"""

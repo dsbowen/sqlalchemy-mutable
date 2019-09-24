@@ -96,14 +96,18 @@ class Mutable(MutableBase):
         """
         return hasattr(obj, '__table__')
     
+    def _convert_item(self, item):
+        """Convert a single item to Mutable object"""
+        return self._convert(item, self.root)
+    
     def _convert_iterable(self, iterable):
         """Convert items in iterable to Mutable objects"""
-        return (self._convert(item, self.root) for item in iterable)
+        return (self._convert_item(item) for item in iterable)
     
     def _convert_mapping(self, mapping):
         """Convert items in dictionary key:item mapping to Mutable objects"""
-        return {key: self._convert(item, self.root) 
-            for key, item in mapping.items()}
+        return {
+            key: self._convert_item(item) for key, item in mapping.items()}
     
     """2. Change tracking"""
     def __new__(cls, source=None, root=None, *args, **kwargs):
