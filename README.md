@@ -7,13 +7,13 @@ SQLAlchemy-Mutable provides generic nested mutable objects and iterables for [SQ
 3. Support for embedded database models
 4. Support for common literals
 5. Support for custom Mutable classes
-6. Support for converting existing classes to mutable classes
+6. Support for converting existing classes to Mutable classes
 
 ## License
 
 Publications which use this software should include the following citation:
 
-Bowen. D.S. (2019). SQLAlchemy-Mutable \[Computer software\]. [https://github.com/dsbowen/sqlalchemy-mutable](https://github.com/dsbowen/sqlalchemy-mutable)
+Bowen, D.S. (2019). SQLAlchemy-Mutable \[Computer software\]. [https://github.com/dsbowen/sqlalchemy-mutable](https://github.com/dsbowen/sqlalchemy-mutable)
 
 This project is licensed under the MIT License [LICENSE](https://github.com/dsbowen/sqlalchemy-mutable/blob/master/LICENSE).
 
@@ -234,9 +234,6 @@ print(x.mutable.nested_mutable.greeting())
 Outputs:
 
 ```
-My name is world
-source name is world
-My name is world
 hello world
 hello moon
 ```
