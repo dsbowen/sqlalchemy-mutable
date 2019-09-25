@@ -11,14 +11,26 @@ from sqlalchemy.types import PickleType
 
 @Mutable.register_tracked_type(dict)
 class MutableDict(Mutable, dict):
-    _untracked_attr_names = Mutable._untracked_attr_names + ['_mapping']
-
+    """Mutable dictionary object
+    
+    MutableDict has the following responsibilities:
+    1. Overload getstate and setstate for pickling
+    2. Register changes for dict methods
+    3. Unshell models when returning values and items iterators
+    """
     def __init__(self, source={}, root=None):
         super().__init__(self._convert_mapping(source))
         
     @property
     def _tracked_items(self):
         return super().values()
+    
+    """1. Pickling
+    
+    Note: _mapping is the key: value mapping of the dictionary. It is used 
+    only when pickling, and is therefore not a tracked attribute.
+    """
+    _untracked_attr_names = Mutable._untracked_attr_names + ['_mapping']
     
     def __getstate__(self):
         self._mapping = dict(self)
@@ -28,6 +40,7 @@ class MutableDict(Mutable, dict):
         self.update(state.pop('_mapping'))
         super().__setstate__(state)
     
+    """2. Register changes for dict methods"""
     def clear(self):
         self._changed()
         super().clear()
@@ -54,6 +67,7 @@ class MutableDict(Mutable, dict):
         # so return self[key] instead of default
         return self[key]
     
+    """3. Unshell models when returning values and items iterators"""
     def values(self):
         return self.unshell().values()
     

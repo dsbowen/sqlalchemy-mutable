@@ -7,6 +7,12 @@ converted to coerced types.
 from .model_shell import ModelShell
 from .mutable import Mutable
 
+@Mutable.register_coerced_type(ModelShell)
+class CoercedModelShell(Mutable, ModelShell):
+    def __init__(self, source):
+        self.id = source.id
+        self.model_class = source.model_class
+
 @Mutable.register_coerced_type(complex)
 class CoerceComplex(Mutable, complex):
     pass
@@ -22,9 +28,3 @@ class CoercedInt(Mutable, int):
 @Mutable.register_coerced_type(str)
 class CoercedStr(Mutable, str):
     pass
-
-@Mutable.register_coerced_type(ModelShell)
-class CoercedModelShell(Mutable, ModelShell):
-    def __init__(self, source):
-        self.id = source.id
-        self.model_class = source.model_class

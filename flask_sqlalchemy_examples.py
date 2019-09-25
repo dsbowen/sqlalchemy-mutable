@@ -3,9 +3,9 @@
 """Setup"""
 
 # 1. Import classes from sqlalchemy_mutable
-from sqlalchemy_mutable import Mutable, MutableType
+from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase
 
-# 2. Standard session creation
+# 2. Standard db.session creation
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -14,23 +14,26 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-class MyModel(db.Model):
+# 3. Subclass MutableModelBase when creating database models
+class MyModel(db.Model, MutableModelBase):
     id = db.Column(db.Integer, primary_key=True)
     greeting = db.Column(db.String)
     
-    # 3. Initialize a database column with MutableType
+    # 4. Initialize a database column with MutableType
     mutable = db.Column(MutableType)  
     
     def __init__(self):
-        # 5. Set mutable column to Mutable object
+        # 6. Set mutable column to Mutable object
         self.mutable = Mutable()
 
-
+# 7. Create the database
 db.create_all()
 
 """Examples"""
 
 # Example 1: Nested mutation tracking
+print('Example 1: Nested mutation tracking')
+
 x = MyModel()
 db.session.add(x)
 x.mutable.nested_mutable = Mutable()
@@ -40,6 +43,8 @@ db.session.commit()
 print(x.mutable.nested_mutable.greeting)
 
 # Example 2: Mutation tracking for iterables
+print('\nExample 2: Mutation tracking for iterables')
+
 x = MyModel()
 db.session.add(x)
 x.mutable = {'greeting': []}
@@ -49,6 +54,8 @@ db.session.commit()
 print(x.mutable['greeting'][0])
 
 # Example 3: Embedded database models
+print('\nExample 3: Embedded database models')
+
 x = MyModel()
 y = MyModel()
 db.session.add_all([x,y])
@@ -59,10 +66,29 @@ y.greeting = 'hello world'
 print(x.mutable.y.greeting)
 print('Successfully recovered y?', x.mutable.y == y)
 
-# Example 4: ```Mutable``` base for customized mutable classes
+# Example 4: Set Mutable Columns to common literals and database models
+print('\nExample 4: Set Mutable Columns to literals and database models')
+
+x = MyModel()
+y = MyModel()
+db.session.add_all([x,y])
+db.session.flush([x,y])
+x.mutable = 'hello world'
+print(x.mutable)
+x.mutable = 123
+print(x.mutable)
+x.mutable = y
+db.session.commit()
+y.greeting = 'hello moon'
+print(x.mutable)
+print(x.mutable.greeting)
+print('Successfully recovered y?', x.mutable == y)
+
+# Example 5: Custom Mutable classes
+print('\nExample 5: Custom Mutable classes')
+
 class CustomMutable(Mutable):
     def __init__(self, name='world'):
-        super().__init__() # Begin by calling super().__init__()
         self.name = name
         
     def greeting(self):
@@ -77,11 +103,12 @@ x.mutable.nested_mutable.name = 'moon'
 db.session.commit()
 print(x.mutable.nested_mutable.greeting())
 
-# Example 5.1: Convert existing classes to mutable classes (basic use)
+# Example 6.1: Convert existing classes to mutable classes (basic use)
+print('\nExample 6.1: Convert existinc classes to mutable classes (basic)')
+
 class ExistingClass():
     def __init__(self, name):
         self.name = name
-        print('My name is', self.name)
     
     def greeting(self):
         return 'hello {}'.format(self.name)
@@ -91,14 +118,13 @@ class ExistingClass():
 @Mutable.register_tracked_type(ExistingClass)
 class MutableClass(Mutable, ExistingClass):
     # 3. Initialization
-    def __init__(self, source=(), root=None):
-        self.root = root
-        src_name = source.name if hasattr(source, 'name') else None
-        print('source name is', src_name)
-        super().__init__(root, name=src_name)
+    # source will be an instance of ExistingClass
+    def __init__(self, source=None, root=None):
+        super().__init__(name=source.name)
         
 x = MyModel()
 db.session.add(x)
+x.mutable = ExistingClass('')
 x.mutable.nested_mutable = ExistingClass('world')
 db.session.commit()
 print(x.mutable.nested_mutable.greeting())
@@ -106,14 +132,15 @@ x.mutable.nested_mutable.name = 'moon'
 db.session.commit()
 print(x.mutable.nested_mutable.greeting())
 
-# Example 5.2: Convert existing classes to mutable classes (advanced use)
+# Example 6.2: Convert existing classes to mutable classes (advanced use)
+print('\nExample 6.2: Convert existinc classes to mutable classes (advanced)')
+
 @Mutable.register_tracked_type(list) 
 class MutableList(Mutable, list):
-    def __init__(self, source=(), root=None):
-        self.root = root
-        # 1. Convert existing class method arguments to Mutable objects
+    def __init__(self, source=[], root=None):
+        # 1. Convert potentially mutable attributes/items to Mutable objects
         converted_list = self._convert_iterable(source)
-        super().__init__(root, converted_list)
+        super().__init__(converted_list)
     
     # 2. Classes with mutable items must have a _tracked_items attribute
     # _tracked_items is a list of potentially mutable items
@@ -124,7 +151,7 @@ class MutableList(Mutable, list):
     # 3. Call self._changed() to register change with the root Mutable object
     def append(self, item):
         self._changed()
-        super().append(self._convert(item, self.root))
+        super().append(self._convert_item(item))
         
 x = MyModel()
 x.mutable.nested_list = []

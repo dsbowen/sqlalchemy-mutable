@@ -11,6 +11,12 @@ from sqlalchemy.types import PickleType
 
 @Mutable.register_tracked_type(list)
 class MutableList(Mutable, list):
+    """Mutbale list object
+    
+    MutableList has the following responsibilities:
+    1. Register changes for list methods
+    2. Unshell models when returning list iterator
+    """
     def __init__(self, source=[], root=None):
         super().__init__(self._convert_iterable(source))
     
@@ -18,6 +24,7 @@ class MutableList(Mutable, list):
     def _tracked_items(self):
         return list(self)
     
+    """1. Register changes for list methods"""
     def append(self, item):
         self._changed()
         super().append(self._convert_item(item))
@@ -38,11 +45,8 @@ class MutableList(Mutable, list):
         self._changed()
         super().sort(cmp=cmp, key=key, reverse=reverse)
     
+    """2. Unshell models when returning list iterator"""
     def __iter__(self):
-        """Iterator
-        
-        Unshell models on iteration.
-        """
         for i in super().__iter__():
             if isinstance(i, ModelShell):
                 yield i.unshell()

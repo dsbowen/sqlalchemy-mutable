@@ -1,6 +1,17 @@
-"""Mutable object base class and MutableType database type
+"""Mutable object, Column type, and model base
 
-Defines the base for (nested) mutable database objects and associated column type and b.
+Defines the core classes for SQLAlchemy-Mutable. 
+
+Mutable is a generic mutable object which tracks changes to its children.
+
+MutableType database Columns may be set to a Mutable object (including 
+MutableList and MutableDict objects), or common literals such as an integer 
+or string (see coerced_types.py).
+
+MutableType database Columns may also be set to another database model. To 
+support this functionality, programmers should subclass MutableModelBase in 
+any database model containing MutableType Columns which may be set to 
+another database model.
 """
 
 from .model_shell import ModelShell
@@ -33,9 +44,7 @@ class Mutable(MutableBase):
     def register_coerced_type(cls, origin_type):
         """Decorator for coerced type registration
         
-        The origin_type maps to a coerced_type. Origin types will be converted
-        to coerced types using the coerce() method. Origin types will not be
-        converted to coerced types on convert().
+        The origin_type maps to a coerced_type. Objects of origin types will be converted to objects of coerced types when the coerce method is invoked. Objects of origin types will not be converted when the _convert method is invoked.
         """
         def register(coerced_type):
             cls._coerced_type_mapping[origin_type] = coerced_type
@@ -46,9 +55,8 @@ class Mutable(MutableBase):
     def register_tracked_type(cls, origin_type):
         """Decorator for tracked type registration
         
-        The origin_type maps to a tracked_type. Origin types will be converted
-        to tracked types using the convert() method. Conversion occurs
-        automatically on coersion and when setting attributes and items.
+        The origin_type maps to a tracked_type. Objects of origin types will be converted to objects of tracked types when the convert method is invoked. Conversion occurs automatically on coersion and when 
+        setting attributes and items.
         """
         def register(tracked_type):
             cls._tracked_type_mapping[origin_type] = tracked_type
@@ -60,7 +68,7 @@ class Mutable(MutableBase):
         """Coercion
         
         If object can be converted to a Mutable object, return the Mutable
-        object. Otherwise, attempt to coerce to coerced_type.
+        object. Otherwise, attempt to coerce to a coerced_type.
         """
         converted_obj = cls._convert(obj)
         if isinstance(converted_obj, cls):
@@ -76,7 +84,7 @@ class Mutable(MutableBase):
         
         Cases:
         1. Object is database model ==> convert to ModelShell
-        2. Object type is registered ==> convert to tracked type
+        2. Object type is registered as tracked ==> convert to tracked type
         3. Object is Mutable ==> set root and return object
         3. Else ==> return object
         """
@@ -86,12 +94,13 @@ class Mutable(MutableBase):
         if tracked_type is not None:
             return tracked_type(obj, root)
         if isinstance(obj, Mutable):
-            obj._set_root(root)
+            obj.root = root
         return obj
     
     @classmethod
     def _object_is_model(self, obj):
-        """
+        """Indicates whether the object is a database model
+        
         Object is assumed to be a database model if it has a __table__ 
         attribute.
         """
@@ -115,11 +124,11 @@ class Mutable(MutableBase):
         """Create new Mutable object
         
         Begin by creating a new object of type cls using super().__new__. If 
-        this new method takes arguments, I assume the first argument is a 
+        super().__new__ takes arguments, I assume the first argument is a 
         source object (the new methods of many literals work this way). 
         Otherwise, begin by creating an empty new object.
         
-        Set the root, python type, and empty tracked attribute names 
+        Then set the root, python type, and empty tracked attribute names 
         registry. The root is used to register changes with the root Mutable 
         object. The python type is used to check for valid attribute setting 
         (see __setattr__). The tracked attribute registry is used for 
@@ -129,16 +138,16 @@ class Mutable(MutableBase):
             new = super().__new__(cls, source)
         except:
             new = super().__new__(cls)
-        new.root = root
         new._python_type = type(source) if source is not None else None
         new._tracked_attr_names = set()
+        new.root = root
         return new
     
     @property
     def root(self):
         """Get root Mutable object
         
-        If the _root attribute does not yet exist, then the column is in the
+        If the _root attribute does not yet exist, then the Column is in the
         process of being unpickled. This is indicated by returning None.
         
         If _root is None, self is the root Mutable object.
@@ -150,7 +159,14 @@ class Mutable(MutableBase):
     
     @root.setter
     def root(self, root):
+        """Set root Mutable object
+        
+        Recursively set the root Mutable object for all tracked children.
+        """
         self._root = root
+        for child in self._tracked_children:
+            if isinstance(child, Mutable):
+                child.root = self.root
         
     @property
     def _tracked_children(self):
@@ -160,12 +176,6 @@ class Mutable(MutableBase):
         if hasattr(self, '_tracked_items'):
             tracked_children += list(self._tracked_items)
         return tracked_children
-    
-    def _set_root(self, root=None):
-        """Set the root for self and Mutable tracked children"""
-        self.root = root
-        [child._set_root(self.root) for child in self._tracked_children
-            if isinstance(child, Mutable)]
     
     def _changed(self):
         """Mark the root Mutable object as changed
@@ -181,7 +191,11 @@ class Mutable(MutableBase):
     def __setattr__(self, name, obj):
         """Set attribute
         
-        If attribute is untracked, set as normal.
+        If attribute is untracked, or if self is a ModelShell, set as 
+        normal. Self should only be a ModelShell when a MutableType column 
+        is set to a database model. In this case, Mutable coerces it to a 
+        ModelShell and stores the id and model class using __setattr__. 
+        These attributes should not be tracked.
         
         If the attribute is tracked and is derived from an original python
         type, make sure instances of the original python type can set the
@@ -238,14 +252,15 @@ class Mutable(MutableBase):
         return state
     
     def __setstate__(self, state):
-        """
+        """Set state for unpickling
+        
         If self is the root Mutable object, set the root for self 
-        and all tracked Mutable children.
+        (and all Mutable children).
         """
         isroot = state.pop('isroot', None)
         self.__dict__ = state
         if isroot:
-            self._set_root()
+            self.root = None
 
 
 class MutableType(PickleType):
@@ -262,8 +277,10 @@ class MutableModelBase():
         model. When this occurs, Mutable coerces the model into a 
         ModelShell. To retrieve the model, this method checks if a requested 
         attribute is a ModelShell, and if so returns the original model.
+        
+        Note that this is identical to the Mutable __getattribute__ method.
         """
-        attr = super().__getattribute__(name)
-        if isinstance(attr, ModelShell):
-            return attr.unshell()
-        return attr
+        obj = super().__getattribute__(name)
+        if isinstance(obj, ModelShell):
+            return obj.unshell()
+        return obj

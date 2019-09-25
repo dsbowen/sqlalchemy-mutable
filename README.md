@@ -5,8 +5,17 @@ SQLAlchemy-Mutable provides generic nested mutable objects and iterables for [SQ
 1. Nested mutation tracking
 2. Mutation tracking for iterables (```list``` and ```dict```)
 3. Support for embedded database models
-4. ```Mutable``` base for customized mutable classes
-5. Support for converting existing classes to mutable classes
+4. Support for common literals
+5. Support for custom Mutable classes
+6. Support for converting existing classes to mutable classes
+
+## License
+
+Publications which use this software should include the following citation:
+
+Bowen. D.S. (2019). SQLAlchemy-Mutable \[Computer software\]. [https://github.com/dsbowen/sqlalchemy-mutable](https://github.com/dsbowen/sqlalchemy-mutable)
+
+This project is licensed under the MIT License [LICENSE](https://github.com/dsbowen/sqlalchemy-mutable/blob/master/LICENSE).
 
 ## Getting Started
 
@@ -20,15 +29,13 @@ $ pip install -U sqlalchemy-mutable
 
 ### Setup
 
-Import classes from sqlalchemy_mutable
+The following code will get you started with SQLAlchemy-Mutable as quickly as possible:
 
 ```python
-from sqlalchemy_mutable import Mutable, MutableType, Query
-```
+# 1. Import classes from sqlalchemy_mutable
+from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase, Query
 
-Setup the SQLAlchemy [session](https://docs.sqlalchemy.org/en/13/orm/session_basics.html) (standard)
-
-```python
+# 2. Standard session creation
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
@@ -39,40 +46,22 @@ Session = scoped_session(session_factory)
 session = Session()
 Base = declarative_base()
 
-class MyModel(Base):
+# 3. Subclass MutableModelBase when creating database models
+class MyModel(Base, MutableModelBase):
     __tablename__ = 'mymodel'
     id = Column(Integer, primary_key=True)
     greeting = Column(String)
-```
-
-Initialize a database column with ```MutableType``` (or ```MutableListType``` or ```MutableDictType```)
-
-```python
-class MyModel(Base):
-    # ...
-    mutable = Column(MutableType)
-```
-
-Add a ```query``` class attribute initialized with a [```scoped_session```](https://docs.sqlalchemy.org/en/13/orm/contextual.html#sqlalchemy.orm.scoping.scoped_session) object (skip this step if using with [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/))
-
-```python
-class MyModel(Base):
-    # ...
-    query = Query(Session)
-```
-
-Set ```mutable``` column to ```Mutable``` object
-
-```python
-class MyModel(Base):
-    # ...
+    
+    # 4. Initialize a database column with MutableType
+    mutable = Column(MutableType) 
+    # 5. Add a query class attribute initialized with a scoped_session
+    query = Query(Session) 
+    
     def __init__(self):
+        # 6. Set mutable column to Mutable object
         self.mutable = Mutable()
-```
 
-Create the database (standard)
-
-```python
+# 7. Create the database
 Base.metadata.create_all(engine)
 ```
 
@@ -130,7 +119,7 @@ Database models may be embedded in the ```Mutable``` object.
 x = MyModel()
 y = MyModel()
 session.add_all([x,y])
-session.flush([x,y]) # Flush or commit models before embedding
+session.flush([x,y]) #Flush or commit models before embedding
 x.mutable.y = y
 session.commit()
 y.greeting = 'hello world'
@@ -145,22 +134,51 @@ hello world
 Successfully recovered y? True
 ```
 
-### Example 4: ```Mutable``` base for customized mutable classes
+### Example 4: Set Mutable Columns to common literals and database models
+
+```MutableType``` columns can take on the values of common Python literals and even other database models.
+
+```python
+x = MyModel()
+y = MyModel()
+session.add_all([x,y])
+session.flush([x,y])
+x.mutable = 'hello world'
+print(x.mutable)
+x.mutable = 123
+print(x.mutable)
+x.mutable = y
+session.commit()
+y.greeting = 'hello moon'
+print(x.mutable)
+print(x.mutable.greeting)
+print('Successfully recovered y?', x.mutable == y)
+```
+
+Outputs:
+
+```
+hello world
+123
+<__main__.MyModel object at 0x03924F10>
+hello moon
+Successfully recovered y? True
+```
+
+### Example 5: Custom Mutable classes
 
 Users can define custom mutable classes by subclassing ```Mutable```.
-
-**Note:** Custom ```__init__``` function must begin by calling```super().__init__()```.
 
 ```python
 class CustomMutable(Mutable):
     def __init__(self, name='world'):
-        super().__init__() # Begin by calling super().__init__()
         self.name = name
         
     def greeting(self):
         return 'hello {}'.format(self.name)
 
 x = MyModel()
+session.add(x)
 x.mutable.nested_mutable = CustomMutable()
 session.commit()
 print(x.mutable.nested_mutable.greeting())
@@ -176,15 +194,12 @@ hello world
 hello moon
 ```
 
-### Example 5.1: Convert existing classes to mutable classes (basic use)
+### Example 6.1: Convert existing classes to mutable classes (basic use)
 
 Users can add mutation tracking to existing classes. The basic steps are:
 1. Create a new mutable class which inherits from ```Mutable``` and the existing class.
-2. Associate the new mutable class with the existing class by registering it using ```@Mutable.register_tracked_type(<Existing Class>)```.
-3. Define ```__init__``` for the new mutable class. ```__init__``` takes a ```source``` (an instance of the existing class type) and a ```root``` (the ```Mutable``` instance at the root of the nested mutable structure, default to ```None```).
-    1. Assign the root with ```self.root=root```.
-    2. Collect the arguments and keyworks arguments of the existing class constructor from ```source```.
-    3. Call ```super().__init__(root, <arguments>)``` where the arguments following ```root``` are those you collected in 3.2. This calls the existing class constructor with the collected arguments.
+2. Associate the new mutable class with the existing class using```@Mutable.register_tracked_type(<Existing Class>)```.
+3. Define the new mutable class constructor. ```__init__``` takes a ```source``` (an instance of the existing class) and a ```root```, which ```Mutable``` will handle. Use ```source``` to pass arguments to the existing class constructor using ```super().__init__```.
 
 You can now treat the existing class as if it were mutable.
 
@@ -192,7 +207,6 @@ You can now treat the existing class as if it were mutable.
 class ExistingClass():
     def __init__(self, name):
         self.name = name
-        print('My name is', self.name)
     
     def greeting(self):
         return 'hello {}'.format(self.name)
@@ -202,14 +216,13 @@ class ExistingClass():
 @Mutable.register_tracked_type(ExistingClass)
 class MutableClass(Mutable, ExistingClass):
     # 3. Initialization
-    def __init__(self, source=(), root=None):
-        self.root = root
-        src_name = source.name if hasattr(source, 'name') else None
-        print('source name is', src_name)
-        super().__init__(root, name=src_name)
+    # source will be an instance of ExistingClass
+    def __init__(self, source=None, root=None):
+        super().__init__(name=source.name)
         
 x = MyModel()
 session.add(x)
+x.mutable = ExistingClass('')
 x.mutable.nested_mutable = ExistingClass('world')
 session.commit()
 print(x.mutable.nested_mutable.greeting())
@@ -228,11 +241,11 @@ hello world
 hello moon
 ```
 
-### Example 5.2: Convert existing classes to mutable classes (advanced use)
+### Example 6.2: Convert existing classes to mutable classes (advanced use)
 
 Notes for converting more complex existing classes to mutable classes:
 1. *Existing class methods take (potentially) mutable arguments*. Convert existing class method arguments to ```Mutable``` objects before passing to the existing class method with ```super().<method>(<converted arguments>)```. ```Mutable``` provides convenience methods for converting arguments:
-    1. ```_convert(object, root=None)``` converts a single object.
+    1. ```_convert_item(item)``` converts a single item.
     2. ```_convert_iterable(iterable)``` converts iterables like ```list```.
     3. ```_convert_mapping(mapping)``` converts key:value mappings like ```dict```.
 2. *The existing class contains items other than its attributes whose mutations you want to track*. For example, a ```list``` contains potentially mutable items which are not attributes. In this case, the new mutable class must have a ```_tracked_items``` attribute which lists these items.
@@ -241,11 +254,10 @@ Notes for converting more complex existing classes to mutable classes:
 ```python
 @Mutable.register_tracked_type(list) 
 class MutableList(Mutable, list):
-    def __init__(self, source=(), root=None):
-        self.root = root
-        # 1. Convert existing class constructor arguments to Mutable objects
+    def __init__(self, source=[], root=None):
+        # 1. Convert potentially mutable attributes/items to Mutable objects
         converted_list = self._convert_iterable(source)
-        super().__init__(root, converted_list)
+        super().__init__(converted_list)
     
     # 2. Classes with mutable items must have a _tracked_items attribute
     # _tracked_items is a list of potentially mutable items
@@ -256,13 +268,13 @@ class MutableList(Mutable, list):
     # 3. Call self._changed() to register change with the root Mutable object
     def append(self, item):
         self._changed()
-        super().append(self._convert(item, self.root))
+        super().append(self._convert_item(item))
         
 x = MyModel()
 x.mutable.nested_list = []
-session.commit()
+db.session.commit()
 x.mutable.nested_list.append('hello world')
-session.commit()
+db.session.commit()
 print(x.mutable.nested_list[0])
 ```
 
@@ -272,11 +284,7 @@ Outputs:
 hello world
 ```
 
-Fortunately, I have already defined ```MutableList``` and ```MutableDict``` for you. These classes underlie the functionality in Example 2.
-
-## License
-
-This project is licensed under the MIT License [LICENSE](https://github.com/dsbowen/sqlalchemy-mutable/blob/master/LICENSE).
+Fortunately, I have already defined ```MutableList``` and ```MutableDict```. These classes underlie the functionality in Example 2.
 
 ## Acknowledgements
 
