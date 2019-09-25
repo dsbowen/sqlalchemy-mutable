@@ -83,9 +83,6 @@ print(x.mutable.nested_mutable.greeting())
 
 # Example 5.1: Convert existing classes to mutable classes (basic use)
 class ExistingClass():
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(cls)
-
     def __init__(self, name):
         self.name = name
     
@@ -100,20 +97,6 @@ class MutableClass(Mutable, ExistingClass):
     def __init__(self, source=None, root=None):
         src_name = source.name if hasattr(source, 'name') else None
         super().__init__(name=src_name)
-    
-    """
-    For custom Mutable classes, MutableClass's __new__ method will be called 
-    before construction with the instance of the ExistingClass passed as the 
-    source.
-    
-    If the __new__ method of the ExistingClass does not accept arguments, 
-    you must define a __new__ method in the MutableClass which does. 
-    
-    Try this first:
-    
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(cls)
-    """
         
 x = MyModel()
 session.add(x)

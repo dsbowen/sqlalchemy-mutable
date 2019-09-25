@@ -4,8 +4,8 @@ Coerced types allow Mutable objects to be set to a value of the subclassed type.
 converted to coerced types.
 """
 
-from .mutable import Mutable
 from .model_shell import ModelShell
+from .mutable import Mutable
 
 @Mutable.register_coerced_type(complex)
 class CoerceComplex(Mutable, complex):
@@ -25,9 +25,6 @@ class CoercedStr(Mutable, str):
 
 @Mutable.register_coerced_type(ModelShell)
 class CoercedModelShell(Mutable, ModelShell):
-    def __new__(cls, source):
-        return super().__new__(cls)
-    
     def __init__(self, source):
         self.id = source.id
         self.model_class = source.model_class

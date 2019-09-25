@@ -1,9 +1,10 @@
 """Mutable object base class and MutableType database type
 
-Defines the base for (nested) mutable database objects and column type.
+Defines the base for (nested) mutable database objects and associated column type and b.
 """
 
 from .model_shell import ModelShell
+
 from sqlalchemy.types import PickleType
 from sqlalchemy.ext.mutable import Mutable as MutableBase
 
@@ -113,20 +114,23 @@ class Mutable(MutableBase):
     def __new__(cls, source=None, root=None, *args, **kwargs):
         """Create new Mutable object
         
-        Set the _python_type of the source object. This will be used to check
-        that setattr operations are valid.
+        Begin by creating a new object of type cls using super().__new__. If 
+        this new method takes arguments, I assume the first argument is a 
+        source object (the new methods of many literals work this way). 
+        Otherwise, begin by creating an empty new object.
         
-        Set root and initialize tracked attribute names set before calling 
-        the constructor.
+        Set the root, python type, and empty tracked attribute names 
+        registry. The root is used to register changes with the root Mutable 
+        object. The python type is used to check for valid attribute setting 
+        (see __setattr__). The tracked attribute registry is used for 
+        assigning new root mutable objects.
         """
-        if source is None:
+        try:
+            new = super().__new__(cls, source)
+        except:
             new = super().__new__(cls)
-            new._python_type = None
-        else:
-            # For use with Mutable types which subclass Mutable
-            new = type(source).__new__(cls, source)
-            new._python_type = type(source)
         new.root = root
+        new._python_type = type(source) if source is not None else None
         new._tracked_attr_names = set()
         return new
     
@@ -186,9 +190,7 @@ class Mutable(MutableBase):
         If so, indicate that self has changed, add the attribute name to the
         tracked attribute registry, and set the attribute.
         """
-        if name in self._untracked_attr_names:
-            return super().__setattr__(name, obj)
-        if isinstance(self, ModelShell):
+        if name in self._untracked_attr_names or isinstance(self, ModelShell):
             return super().__setattr__(name, obj)
         if self._python_type is not None:
             empty = self._python_type.__new__(self._python_type)
@@ -249,5 +251,19 @@ class Mutable(MutableBase):
 class MutableType(PickleType):
     """Mutable database type"""
     
-
 Mutable.associate_with(MutableType)
+
+
+class MutableModelBase():
+    """Base for database models with MutableType columns"""
+    def __getattribute__(self, name):
+        """
+        Sometimes programmers will set a Mutable attribute to a database 
+        model. When this occurs, Mutable coerces the model into a 
+        ModelShell. To retrieve the model, this method checks if a requested 
+        attribute is a ModelShell, and if so returns the original model.
+        """
+        attr = super().__getattribute__(name)
+        if isinstance(attr, ModelShell):
+            return attr.unshell()
+        return attr
