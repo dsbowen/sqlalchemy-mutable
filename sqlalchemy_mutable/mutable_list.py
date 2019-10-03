@@ -14,17 +14,41 @@ class MutableList(Mutable, list):
     """Mutbale list object
     
     MutableList has the following responsibilities:
-    1. Register changes for list methods
-    2. Unshell models when returning list iterator
+    1. Overload getstate and setstate for pickling
+    2. Register changes for list methods
+    3. Unshell models when returning list iterator
     """
     def __init__(self, source=[], root=None):
+        """
+        _pickling indicates that the MutableList is being pickled. When 
+        creating the list iterable during pickling, ModelShell objects 
+        should not be unshelled.
+        """
+        self._pickling = False
         super().__init__(self._convert_iterable(source))
     
     @property
     def _tracked_items(self):
         return list(self)
+
+    """1. Pickling
     
-    """1. Register changes for list methods"""
+    Note: _mapping is the index: value mapping of the list. It is used 
+    only when pickling, and is therefore not a tracked attribute.
+    """
+    _untracked_attr_names = (
+        Mutable._untracked_attr_names + ['_mapping', '_pickling'])
+
+    def __getstate__(self):
+        self._pickling = True
+        self._mapping = list(self)
+        return super().__getstate__()
+    
+    def __setstate__(self, state):
+        super().__setstate__(state)
+        self._pickling = False
+    
+    """2. Register changes for list methods"""
     def append(self, item):
         self._changed()
         super().append(self._convert_item(item))
@@ -45,10 +69,13 @@ class MutableList(Mutable, list):
         self._changed()
         super().sort(cmp=cmp, key=key, reverse=reverse)
     
-    """2. Unshell models when returning list iterator"""
+    """3. Unshell models when returning list iterator"""
     def __iter__(self):
+        """
+        Note: ModelShells should not be unshelled when pickling.
+        """
         for i in super().__iter__():
-            if isinstance(i, ModelShell):
+            if not self._pickling and isinstance(i, ModelShell):
                 yield i.unshell()
             else:
                 yield i

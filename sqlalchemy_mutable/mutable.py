@@ -220,8 +220,9 @@ class Mutable(MutableBase):
         return obj
     
     def __delattr__(self, name):
-        self._changed()
-        self._tracked_attr_names.remove(name)
+        if name in self._tracked_attr_names:
+            self._changed()
+            self._tracked_attr_names.remove(name)
         super().__delattr__(name)
     
     def __setitem__(self, key, obj):
