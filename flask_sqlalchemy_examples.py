@@ -9,14 +9,10 @@ from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy()
-
-def create_app():
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db.init_app(app)
-    return app
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 # 3. Subclass MutableModelBase when creating database models
 class MyModel(MutableModelBase, db.Model):
@@ -30,24 +26,6 @@ class MyModel(MutableModelBase, db.Model):
         # 6. Set mutable column to Mutable object
         self.mutable = Mutable()
 
-app = create_app()
-
-@app.shell_context_processor
-def make_shell_context():
-    db.create_all()
-    x=MyModel()
-    y=MyModel()
-    db.session.add_all([x,y])
-    db.session.flush([x,y])
-    x.mutable=[y]
-    print('before commit', x.mutable)
-    db.session.commit()
-    print('after commit', x.mutable)
-    print('y in x.mutable', y in x.mutable)
-    print('x.mutable is', list(x.mutable))
-    return globals()
-
-'''
 # 7. Create the database
 db.create_all()
 
@@ -181,4 +159,3 @@ db.session.commit()
 x.mutable.nested_list.append('hello world')
 db.session.commit()
 print(x.mutable.nested_list[0])
-'''
