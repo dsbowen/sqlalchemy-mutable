@@ -53,6 +53,10 @@ class MutableList(Mutable, list):
         self._changed()
         super().append(self._convert_item(item))
 
+    def clear(self):
+        self._changed()
+        super().clear()
+
     def extend(self, iterable):
         self._changed()
         super().extend(self._convert_iterable(iterable))
