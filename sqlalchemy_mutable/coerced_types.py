@@ -7,6 +7,8 @@ converted to coerced types.
 from .model_shell import ModelShell
 from .mutable import Mutable
 
+from datetime import datetime
+
 @Mutable.register_coerced_type(ModelShell)
 class CoercedModelShell(Mutable, ModelShell):
     def __init__(self, source):
@@ -28,3 +30,21 @@ class CoercedInt(Mutable, int):
 @Mutable.register_coerced_type(str)
 class CoercedStr(Mutable, str):
     pass
+
+@Mutable.register_coerced_type(datetime)
+class CoercedDatetime(Mutable, datetime):
+    def __new__(cls, source):
+        if isinstance(source, datetime):
+            return datetime.__new__(
+                cls,
+                source.year,
+                source.month,
+                source.day,
+                source.hour,
+                source.minute,
+                source.second,
+                source.microsecond,
+                source.tzinfo,
+                fold=source.fold
+            )
+        return super().__new__(cls, source)

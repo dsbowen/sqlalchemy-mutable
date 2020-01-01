@@ -172,7 +172,8 @@ class Mutable(MutableBase):
     def _tracked_children(self):
         """Return a list of all tracked children (attributes and items)"""
         tracked_children = [
-            self.__getattribute__(name) for name in self._tracked_attr_names]
+            self.__getattribute__(name) for name in self._tracked_attr_names
+        ]
         if hasattr(self, '_tracked_items'):
             tracked_children += list(self._tracked_items)
         return tracked_children
