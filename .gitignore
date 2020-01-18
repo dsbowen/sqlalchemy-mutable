@@ -1,5 +1,4 @@
-build
-dist 
-sqlalchemy_mutable.egg-info
 __pycache__
+*.egg-info
+dist/
 test.py

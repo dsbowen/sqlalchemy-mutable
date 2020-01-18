@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sqlalchemy-mutable",
-    version="0.0.6",
+    version="0.0.7",
     author="Dillon Bowen",
     author_email="dsbowen@wharton.upenn.edu",
     description="Generic nested mutable objects and iterables for SQLAlchemy",
@@ -13,6 +13,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/dsbowen/sqlalchemy-mutable",
     packages=setuptools.find_packages(),
+    install_requires=[
+        'sqlalchemy==1.3.12',
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
