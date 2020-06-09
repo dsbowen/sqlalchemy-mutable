@@ -1,0 +1,18 @@
+site_name: SQLAlchemy-Mutable
+docs_dir: docs_md
+site_dir: docs
+repo_url: https://github.com/dsbowen/sqlalchemy-mutable
+edit_uri: edit/master/docs_md
+nav:
+  - Home: index.md
+  - Setup: setup.md
+  - Basic objects: basic.md
+  - Coerced types: coerced_types.md
+  - Storing models: model_shell.md
+  - Mutable list: mutable_list.md
+  - Mutable dictionary: mutable_dict.md
+  - Advanced type conversion: convert.md
+  - Contribute: contribute.md
+theme: readthedocs
+extra_css:
+  - css/extra.css

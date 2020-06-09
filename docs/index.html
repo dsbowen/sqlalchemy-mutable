@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="None">
+  
+  
+  <link rel="shortcut icon" href="img/favicon.ico">
+  <title>SQLAlchemy-Mutable</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="css/extra.css" rel="stylesheet" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Home";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="js/jquery-2.1.1.min.js" defer></script>
+  <script src="js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> SQLAlchemy-Mutable</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#citation">Citation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#acknowledgments">Acknowledgments</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="setup/">Setup</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="basic/">Basic objects</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="coerced_types/">Coerced types</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="model_shell/">Storing models</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="mutable_list/">Mutable list</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="mutable_dict/">Mutable dictionary</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="convert/">Advanced type conversion</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="contribute/">Contribute</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">SQLAlchemy-Mutable</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/dsbowen/sqlalchemy-mutable/edit/master/docs_md/index.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="sqlalchemy-mutable">SQLAlchemy-Mutable</h1>
+<p>SQLAlchemy-Mutable aspires to be the most powerful and flexible <a href="https://www.sqlalchemy.org">SQLAlchemy</a> database column type.</p>
+<p>Its features include:</p>
+<ol>
+<li>Nested mutation tracking</li>
+<li>Mutation tracking for <code>list</code> and <code>dict</code></li>
+<li>Support for storing database models in mutable columns</li>
+<li>Support for common literals and <code>datetime</code> objects</li>
+<li>Support for custom mutable classes</li>
+<li>Support for converting existing classes to mutable classes</li>
+<li>Compatibility with <a href="https://flask-sqlalchemy.palletsprojects.com/en/2.x/">Flask-SQLAlchemy</a></li>
+</ol>
+<h2 id="installation">Installation</h2>
+<pre><code>$ pip install sqlalchemy-mutable
+</code></pre>
+
+<h2 id="quickstart">Quickstart</h2>
+<p>Setup:</p>
+<pre><code class="python">from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase, Query
+
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.ext.declarative import declarative_base
+
+# create a session (standard)
+engine = create_engine('sqlite:///:memory:')
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(session_factory)
+session = Session()
+Base = declarative_base()
+
+# subclass `MutableModelBase` when creating database models 
+# which may be stored in a `Mutable` object
+class MyModel(MutableModelBase, Base):
+    __tablename__ = 'mymodel'
+    id = Column(Integer, primary_key=True)
+    greeting = Column(String)
+
+    # initialize a database column with `MutableType`
+    mutable = Column(MutableType) 
+    # add a `query` class attribute initialized with a scoped_session
+    # not necessary for use with Flask-SQLAlchemy
+    query = Query(Session) 
+
+    def __init__(self):
+        # set mutable column to `Mutable` object
+        self.mutable = Mutable()
+
+# create the database (standard)
+Base.metadata.create_all(engine)
+</code></pre>
+
+<p>Examples:</p>
+<pre><code class="python">model = MyModel()
+session.add(model)
+session.commit()
+
+# nested mutable objects
+model.mutable.nested_mutable = Mutable()
+session.commit()
+model.mutable.nested_mutable.greet = 'hello world'
+session.commit()
+print(model.mutable.nested_mutable.greet)
+
+# nested mutable list and dict
+model.mutable = {}
+session.commit()
+model.mutable['greet'] = ['hello world']
+session.commit()
+print(model.mutable)
+
+# storing database models
+model.mutable = model
+session.commit()
+print(model.mutable)
+
+# common literals
+model.mutable = 'hello world'
+session.commit()
+print(model.mutable)
+</code></pre>
+
+<p>Out:</p>
+<pre><code>hello world
+{'greet': ['hello world']}
+&lt;__main__.MyModel object at 0x7fe54a2d7b00&gt;
+hello world
+</code></pre>
+
+<h2 id="citation">Citation</h2>
+<pre><code>@software{bowen2020sqlalchemy-mutable,
+  author = {Dillon Bowen},
+  title = {SQLAlchemy-Mutable},
+  url = {https://dsbowen.github.io/sqlalchemy-mutable/},
+  date = {2020-06-09},
+}
+</code></pre>
+
+<h2 id="license">License</h2>
+<p>Users must cite this package in any publications which use it.</p>
+<p>It is licensed with the MIT <a href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/LICENSE">License</a>.</p>
+<h2 id="acknowledgments">Acknowledgments</h2>
+<p>Original inspiration drawn from <a href="https://github.com/edelooff/sqlalchemy-json">SQLAlchemy-JSON</a>.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="setup/" class="btn btn-neutral float-right" title="Setup">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/dsbowen/sqlalchemy-mutable/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+      
+        <span style="margin-left: 15px"><a href="setup/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '.';</script>
+    <script src="js/theme.js" defer></script>
+      <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.1.1
+Build Date UTC : 2020-06-09 21:27:35.978494+00:00
+-->

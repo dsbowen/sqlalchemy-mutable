@@ -5,16 +5,16 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sqlalchemy-mutable",
-    version="0.0.7",
+    version="0.0.8",
     author="Dillon Bowen",
     author_email="dsbowen@wharton.upenn.edu",
-    description="Generic nested mutable objects and iterables for SQLAlchemy",
+    description="A powerful and flexible SQLAlchemy database type for nested mutation tracking",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/dsbowen/sqlalchemy-mutable",
+    url="https://dsbowen.github.io/sqlalchemy-mutable/",
     packages=setuptools.find_packages(),
     install_requires=[
-        'sqlalchemy==1.3.12',
+        'sqlalchemy>=1.3.12',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

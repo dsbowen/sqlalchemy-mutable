@@ -10,6 +10,7 @@ Its features include:
 4. Support for common literals and `datetime` objects
 5. Support for custom mutable classes
 6. Support for converting existing classes to mutable classes
+7. Compatibility with [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/)
 
 ## Installation
 
