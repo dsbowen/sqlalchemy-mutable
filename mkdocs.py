@@ -1,7 +1,7 @@
 from docstr_md.python import PySoup, compile_md
 from docstr_md.src_href import Github
 
-src_href = Github('https://github.com/dsbowen/sqlalchemy-mutable')
+src_href = Github('https://github.com/dsbowen/sqlalchemy-mutable/blob/master')
 
 path = 'sqlalchemy_mutable/mutable.py'
 soup = PySoup(path=path, parser='sklearn', src_href=src_href)

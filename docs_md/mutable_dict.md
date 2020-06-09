@@ -76,7 +76,7 @@ dictionary, substitute `MutableDictType` for `MutableType`.
 ##sqlalchemy_mutable.**MutableDict**
 
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/mutable_dict.py#L51">[source]</a>
+    <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L51">[source]</a>
 </p>
 
 Subclasses `dict`, and implements all `dict` methods.
@@ -106,7 +106,7 @@ Subclasses `dict`, and implements all `dict` methods.
 
 
 <p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/mutable_dict.py#L123">[source]</a>
+    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L123">[source]</a>
 </p>
 
 Call to force values to unshell. Normally this occurs automatically.

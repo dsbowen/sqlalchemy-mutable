@@ -76,7 +76,7 @@ substitute `MutableListType` for `MutableType`.
 ##sqlalchemy_mutable.**MutableList**
 
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.<b>MutableList</b>(<i>source=[], root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/mutable_list.py#L50">[source]</a>
+    <i>class</i> sqlalchemy_mutable.<b>MutableList</b>(<i>source=[], root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L50">[source]</a>
 </p>
 
 Subclasses `list`, and implements all `list` methods.
@@ -106,7 +106,7 @@ Subclasses `list`, and implements all `list` methods.
 
 
 <p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/mutable_list.py#L123">[source]</a>
+    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L123">[source]</a>
 </p>
 
 Call to force values to unshell. Normally this occurs automatically.
