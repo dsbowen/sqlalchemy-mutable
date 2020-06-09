@@ -79,7 +79,7 @@ substitute `MutableListType` for `MutableType`.
     <i>class</i> sqlalchemy_mutable.<b>MutableList</b>(<i>source=[], root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/mutable_list.py#L50">[source]</a>
 </p>
 
-Mutable list.
+Subclasses `list`, and implements all `list` methods.
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />

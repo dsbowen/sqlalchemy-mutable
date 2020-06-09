@@ -49,7 +49,7 @@ class MutableListType(PickleType):
 
 @Mutable.register_tracked_type(list)
 class MutableList(Mutable, list):
-    """Mutable list.
+    """Subclasses `list`, and implements all `list` methods.
     
     Parameters
     ----------

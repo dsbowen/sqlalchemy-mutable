@@ -50,7 +50,7 @@ class MutableDictType(PickleType):
 
 @Mutable.register_tracked_type(dict)
 class MutableDict(Mutable, dict):
-    """Mutable dictionary.
+    """Subclasses `dict`, and implements all `dict` methods.
     
     Parameters
     ----------

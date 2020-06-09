@@ -9,6 +9,16 @@ class Query():
     Query attribute in database model. Models which have a `query` attribute 
     will be unshelled automatically when stored and recovered in a `Mutable` 
     object. See the [setup code](setup.md).
+
+    Parameters
+    ----------
+    scoped_session : sqlalchemy.orm.scoping.scoped_session
+        Current scoped session.
+
+    Attributes
+    ----------
+    scoped_session : sqlalchemy.orm.scoping.scoped_session
+        Set from the `scoped_session` parameter.
     """
     def __init__(self, scoped_session):
         self.scoped_session = scoped_session

@@ -45,7 +45,20 @@ object. See the [setup code](setup.md).
     <col class="field-name" />
     <col class="field-body" />
     <tbody valign="top">
-        
+        <tr class="field">
+    <th class="field-name"><b>Parameters:</b></td>
+    <td class="field-body" width="100%"><b>scoped_session : <i>sqlalchemy.orm.scoping.scoped_session</i></b>
+<p class="attr">
+    Current scoped session.
+</p></td>
+</tr>
+<tr class="field">
+    <th class="field-name"><b>Attributes:</b></td>
+    <td class="field-body" width="100%"><b>scoped_session : <i>sqlalchemy.orm.scoping.scoped_session</i></b>
+<p class="attr">
+    Set from the <code>scoped_session</code> parameter.
+</p></td>
+</tr>
     </tbody>
 </table>
 
@@ -56,7 +69,7 @@ object. See the [setup code](setup.md).
 ##sqlalchemy_mutable.model_shell.**ModelShell**
 
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.model_shell.<b>ModelShell</b>(<i>model</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/model_shell.py#L21">[source]</a>
+    <i>class</i> sqlalchemy_mutable.model_shell.<b>ModelShell</b>(<i>model</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/model_shell.py#L31">[source]</a>
 </p>
 
 The `ModelShell` stores (shells) and recovers (unshells) database
@@ -91,7 +104,7 @@ models in `Mutable` objects and `MutableType` columns.
 
 1. The model must have an identity before it is shelled. i.e you must add
 it to the session and commit or flush it.
-2. Models are unshelled to make comparisons such as `__eq__`.
+2. Models are unshelled to make comparisons the `__eq__` comparison.
 
 ####Examples
 
@@ -118,7 +131,7 @@ Out:
 
 
 <p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/model_shell.py#L70">[source]</a>
+    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/model_shell.py#L80">[source]</a>
 </p>
 
 Recover (unshell) a model.

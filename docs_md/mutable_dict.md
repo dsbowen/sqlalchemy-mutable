@@ -79,7 +79,7 @@ dictionary, substitute `MutableDictType` for `MutableType`.
     <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/sqlalchemy_mutable/mutable_dict.py#L51">[source]</a>
 </p>
 
-Mutable dictionary.
+Subclasses `dict`, and implements all `dict` methods.
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />

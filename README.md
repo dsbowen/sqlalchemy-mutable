@@ -1,5 +1,3 @@
-# SQLAlchemy-Mutable
-
 SQLAlchemy-Mutable aspires to be the most powerful and flexible [SQLAlchemy](https://www.sqlalchemy.org) database column type.
 
 Its features include:
