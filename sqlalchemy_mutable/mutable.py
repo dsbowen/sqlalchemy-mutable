@@ -49,8 +49,14 @@ class MutableModelBase():
         
         Note that this is identical to the `Mutable.__getattribute__`.
         """
+        from .coerced_types import CoercedBool
+        
         obj = super().__getattribute__(name)
-        return obj.unshell() if isinstance(obj, ModelShell) else obj
+        if isinstance(obj, ModelShell):
+            return obj.unshell()
+        if isinstance(obj, CoercedBool):
+            return obj.value
+        return obj
 
 
 class MutableType(PickleType):

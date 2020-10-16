@@ -27,11 +27,13 @@ be converted to coerced types.
 
 Supported coerced types are:
 
+- `bool`
 - `complex`
+- `datetime.datetime`
 - `float`
 - `int`
 - `str`
-- `datetime.datetime`
+- `types.FunctionType`
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />

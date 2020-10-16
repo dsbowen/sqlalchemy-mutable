@@ -1,6 +1,26 @@
-"""Mutable Dict class and MutableDictType database type
+"""# Mutable dictionary
 
-Defines the classes for (nested) mutable dictionaries.
+Examples
+--------
+Make sure you have run the [setup code](setup.md).
+
+```python
+model = MyModel()
+model.mutable = {}
+session.add(model)
+session.commit()
+# without a mutable dictionary,
+# this change will not survive a commit
+model.mutable['hello'] = 'world'
+session.commit()
+model.mutable
+```
+
+Out:
+
+```
+{'hello': 'world'}
+```
 """
 
 from .mutable import Mutable
@@ -9,15 +29,42 @@ from .model_shell import ModelShell
 from sqlalchemy.types import PickleType
 
 
+class MutableDictType(PickleType):
+    """
+    Mutable dictionary database type.
+    
+    In the setup code, we use a `MutableType` database column, which handles 
+    dictionaries as well as other objects. To force the column to be a 
+    dictionary, substitute `MutableDictType` for `MutableType`.
+    """
+    @classmethod
+    def coerce(cls, key, obj):
+        """Object must be dict"""
+        if isinstance(obj, cls):
+            return obj
+        if isinstance(obj, dict):
+            return cls(obj)
+        return super().coerce(obj)
+
+
+
 @Mutable.register_tracked_type(dict)
 class MutableDict(Mutable, dict):
-    """Mutable dictionary object
+    """Subclasses `dict`, and implements all `dict` methods.
     
-    MutableDict has the following responsibilities:
-    1. Overload getstate and setstate for pickling
-    2. Register changes for dict methods
-    3. Unshell models when returning values and items iterators
+    Parameters
+    ----------
+    source : dict, default={}
+        Source object which will be converted into a mutable dictionary.
+
+    root : sqlalchemy_mutable.Mutable or None, default=None
+        Root mutable object. If `None`, `self` is assumed to be the root.
     """
+
+    # MutableDict has the following responsibilities:
+    # 1. Overload getstate and setstate for pickling
+    # 2. Register changes for dict methods
+    # 3. Unshell models when returning values and items iterators
     def __init__(self, source={}, root=None):
         super().__init__(self._convert_mapping(source))
         
@@ -25,11 +72,10 @@ class MutableDict(Mutable, dict):
     def _tracked_items(self):
         return super().values()
     
-    """1. Pickling
+    # 1. Pickling
     
-    Note: _mapping is the key: value mapping of the dictionary. It is used 
-    only when pickling, and is therefore not a tracked attribute.
-    """
+    # Note: _mapping is the key: value mapping of the dictionary. It is used 
+    # only when pickling, and is therefore not a tracked attribute.
     _untracked_attr_names = Mutable._untracked_attr_names + ['_mapping']
     
     def __getstate__(self):
@@ -40,7 +86,7 @@ class MutableDict(Mutable, dict):
         self.update(state.pop('_mapping'))
         super().__setstate__(state)
     
-    """2. Register changes for dict methods"""
+   # 2. Register changes for dict methods
     def clear(self):
         self._changed()
         super().clear()
@@ -67,7 +113,7 @@ class MutableDict(Mutable, dict):
         # so return self[key] instead of default
         return self[key]
     
-    """3. Unshell models when returning values and items iterators"""
+    # 3. Unshell models when returning values and items iterators
     def values(self):
         return self.unshell().values()
     
@@ -75,29 +121,18 @@ class MutableDict(Mutable, dict):
         return self.unshell().items()
     
     def unshell(self):
-        """Create unshelled copy of dictionary
-        
-        Create a dictionary shallow copy of self. Unshell any models which
-        appear in dictionary values.
         """
-        unshelled_dict = {}
-        for key, value in super().items():
-            if isinstance(value, ModelShell):
-                value = value.unshell()
-            unshelled_dict[key] = value
-        return unshelled_dict
+        Call to force values to unshell. Normally this occurs automatically.
 
-
-class MutableDictType(PickleType):
-    """Mutable dictionary database type"""
-    @classmethod
-    def coerce(cls, key, obj):
-        """Object must be dict"""
-        if isinstance(obj, cls):
-            return obj
-        if isinstance(obj, dict):
-            return cls(obj)
-        return super().coerce(obj)
+        Returns
+        -------
+        copy : dict
+            Shallow copy of `self` where all `ModelShell` values are unshelled.
+        """
+        return {
+            key: val.unshell() if isinstance(val, ModelShell) else val
+            for key, val in super().items()
+        }
 
 
 MutableDict.associate_with(MutableDictType)

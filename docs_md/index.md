@@ -105,7 +105,7 @@ hello world
   author = {Dillon Bowen},
   title = {SQLAlchemy-Mutable},
   url = {https://dsbowen.github.io/sqlalchemy-mutable/},
-  date = {2020-06-09},
+  date = {2020-10-16},
 }
 ```
 

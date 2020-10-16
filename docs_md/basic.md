@@ -148,7 +148,7 @@ Out:
 
 
 <p class="func-header">
-    <i></i> <b>register_coerced_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L116">[source]</a>
+    <i></i> <b>register_coerced_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L122">[source]</a>
 </p>
 
 Decorator for coerced type registration.
@@ -212,7 +212,7 @@ Out:
 
 
 <p class="func-header">
-    <i></i> <b>register_tracked_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L171">[source]</a>
+    <i></i> <b>register_tracked_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L177">[source]</a>
 </p>
 
 Decorator for tracked type registration.

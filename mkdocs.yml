@@ -11,8 +11,10 @@ nav:
   - Storing models: model_shell.md
   - Mutable list: mutable_list.md
   - Mutable dictionary: mutable_dict.md
+  - Mutable partial function: mutable_partial.md
   - Advanced type conversion: convert.md
   - Contribute: contribute.md
+  - Change log: changelog.md
 theme: readthedocs
 extra_css:
   - css/extra.css

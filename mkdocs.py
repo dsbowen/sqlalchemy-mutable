@@ -44,3 +44,8 @@ for obj in soup.objects:
             obj.methods = [m for m in obj.methods if m.name == 'unshell']
 soup.import_path = 'sqlalchemy_mutable'
 compile_md(soup, compiler='sklearn', outfile='docs_md/mutable_dict.md')
+
+path = 'sqlalchemy_mutable/mutable_partial.py'
+soup = PySoup(path=path, parser='sklearn', src_href=src_href)
+soup.import_path = 'sqlalchemy_mutable'
+compile_md(soup, compiler='sklearn', outfile='docs_md/mutable_partial.md')

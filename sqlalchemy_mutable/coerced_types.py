@@ -6,11 +6,13 @@ be converted to coerced types.
 
 Supported coerced types are:
 
+- `bool`
 - `complex`
+- `datetime.datetime`
 - `float`
 - `int`
 - `str`
-- `datetime.datetime`
+- `types.FunctionType`
 
 Examples
 --------
@@ -69,6 +71,7 @@ Out:
 from .model_shell import ModelShell
 from .mutable import Mutable
 
+import types
 from datetime import datetime
 
 @Mutable.register_coerced_type(ModelShell)
@@ -76,6 +79,13 @@ class CoercedModelShell(Mutable, ModelShell):
     def __init__(self, source):
         self.id = source.id
         self.model_class = source.model_class
+
+@Mutable.register_coerced_type(bool)
+class CoercedBool(Mutable):
+    def __new__(cls, source):
+        new = super().__new__(cls)
+        new.value = source
+        return new
 
 @Mutable.register_coerced_type(complex)
 class CoercedComplex(Mutable, complex):
@@ -92,6 +102,16 @@ class CoercedInt(Mutable, int):
 @Mutable.register_coerced_type(str)
 class CoercedStr(Mutable, str):
     pass
+
+@Mutable.register_coerced_type(types.FunctionType)
+class CoercedFunc(Mutable):
+    def __new__(cls, source):
+        new = super().__new__(cls)
+        new.func = source
+        return new
+    
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
 
 @Mutable.register_coerced_type(datetime)
 class CoercedDatetime(Mutable, datetime):

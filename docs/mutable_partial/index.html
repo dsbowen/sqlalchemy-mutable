@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Mutable dictionary - SQLAlchemy-Mutable</title>
+  <title>Mutable partial function - SQLAlchemy-Mutable</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -19,8 +19,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Mutable dictionary";
-    var mkdocs_page_input_path = "mutable_dict.md";
+    var mkdocs_page_name = "Mutable partial function";
+    var mkdocs_page_input_path = "mutable_partial.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -72,24 +72,24 @@
                     <li class="toctree-l1"><a class="reference internal" href="../mutable_list/">Mutable list</a>
                     </li>
                 </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../mutable_dict/">Mutable dictionary</a>
+                    </li>
+                </ul>
                 <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Mutable dictionary</a>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Mutable partial function</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#sqlalchemy_mutablemutabledicttype">sqlalchemy_mutable.MutableDictType</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#sqlalchemy_mutablemutabledict">sqlalchemy_mutable.MutableDict</a>
+    <li class="toctree-l2"><a class="reference internal" href="#sqlalchemy_mutablepartial">sqlalchemy_mutable.partial</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#methods">Methods</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#examples_1">Examples</a>
     </li>
         </ul>
     </li>
     </ul>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="../mutable_partial/">Mutable partial function</a>
                     </li>
                 </ul>
                 <ul>
@@ -125,10 +125,10 @@
     
       
     
-    <li>Mutable dictionary</li>
+    <li>Mutable partial function</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/dsbowen/sqlalchemy-mutable/edit/master/docs_md/mutable_dict.md"
+        <a href="https://github.com/dsbowen/sqlalchemy-mutable/edit/master/docs_md/mutable_partial.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -161,7 +161,8 @@
     }
 </style>
 
-<h1 id="mutable-dictionary">Mutable dictionary</h1>
+<h1 id="mutable-partial">Mutable partial</h1>
+<p>This is analogous to <code>functools.partial</code>.</p>
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
     <col class="field-body" />
@@ -172,26 +173,27 @@
 
 <h4 id="examples">Examples</h4>
 <p>Make sure you have run the <a href="../setup/">setup code</a>.</p>
-<pre><code class="python">model = MyModel()
-model.mutable = {}
-session.add(model)
-session.commit()
-# without a mutable dictionary,
-# this change will not survive a commit
-model.mutable['hello'] = 'world'
-session.commit()
-model.mutable
+<pre><code class="python">def foo(*args, **kwargs):
+    print('args', args)
+    print('kwargs', kwargs)
+    return 0
+
+model = MyModel()
+model.mutable = partial(foo, 'hello world', goodbye='moon')
+model.mutable()
 </code></pre>
 
 <p>Out:</p>
-<pre><code>{'hello': 'world'}
+<pre><code>args ('hello world',)
+kwargs {'goodbye': 'moon'}
+0
 </code></pre>
 
-<h2 id="sqlalchemy_mutablemutabledicttype">sqlalchemy_mutable.<strong>MutableDictType</strong></h2>
-<p>Mutable dictionary database type.</p>
-<p>In the setup code, we use a <code>MutableType</code> database column, which handles
-dictionaries as well as other objects. To force the column to be a
-dictionary, substitute <code>MutableDictType</code> for <code>MutableType</code>.</p>
+<h2 id="sqlalchemy_mutablepartial">sqlalchemy_mutable.<strong>partial</strong></h2>
+<p class="func-header">
+    <i>class</i> sqlalchemy_mutable.<b>partial</b>(<i>func, *args, **kwargs</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L32">[source]</a>
+</p>
+
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
     <col class="field-body" />
@@ -200,57 +202,45 @@ dictionary, substitute <code>MutableDictType</code> for <code>MutableType</code>
     </tbody>
 </table>
 
-<h2 id="sqlalchemy_mutablemutabledict">sqlalchemy_mutable.<strong>MutableDict</strong></h2>
+<h4 id="methods">Methods</h4>
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L51">[source]</a>
+    <i></i> <b>register</b>(<i>cls, func</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L37">[source]</a>
 </p>
 
-<p>Subclasses <code>dict</code>, and implements all <code>dict</code> methods.</p>
+<p>Register a partial function.</p>
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
     <col class="field-body" />
     <tbody valign="top">
         <tr class="field">
     <th class="field-name"><b>Parameters:</b></td>
-    <td class="field-body" width="100%"><b>source : <i>dict, default={}</i></b>
+    <td class="field-body" width="100%"><b>func : <i>callable</i></b>
 <p class="attr">
-    Source object which will be converted into a mutable dictionary.
-</p>
-<b>root : <i>sqlalchemy_mutable.Mutable or None, default=None</i></b>
-<p class="attr">
-    Root mutable object. If <code>None</code>, <code>self</code> is assumed to be the root.
+
 </p></td>
 </tr>
-    </tbody>
-</table>
-
-<h4 id="methods">Methods</h4>
-<p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L123">[source]</a>
-</p>
-
-<p>Call to force values to unshell. Normally this occurs automatically.</p>
-<table class="docutils field-list field-table" frame="void" rules="none">
-    <col class="field-name" />
-    <col class="field-body" />
-    <tbody valign="top">
-        <tr class="field">
+<tr class="field">
     <th class="field-name"><b>Returns:</b></td>
-    <td class="field-body" width="100%"><b>copy : <i>dict</i></b>
+    <td class="field-body" width="100%"><b>func : <i>callable</i></b>
 <p class="attr">
-    Shallow copy of <code>self</code> where all <code>ModelShell</code> values are unshelled.
+    <code>func</code> parameter.
 </p></td>
 </tr>
     </tbody>
 </table>
 
-<table class="docutils field-list field-table" frame="void" rules="none">
-    <col class="field-name" />
-    <col class="field-body" />
-    <tbody valign="top">
+<h4 id="examples_1">Examples</h4>
+<p>Make sure you have run the setup code.</p>
+<pre><code class="python">@partial.register
+def foo(*args, **kwargs):
+    print('args', args)
+    print('kwargs', kwargs)
+    return 0
 
-    </tbody>
-</table>
+model = MyModel()
+model.mutable = partial.foo('hello world', goodbye='moon')
+model.mutable()
+</code></pre>
               
             </div>
           </div>
@@ -258,10 +248,10 @@ dictionary, substitute <code>MutableDictType</code> for <code>MutableType</code>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../mutable_partial/" class="btn btn-neutral float-right" title="Mutable partial function">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../convert/" class="btn btn-neutral float-right" title="Advanced type conversion">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../mutable_list/" class="btn btn-neutral" title="Mutable list"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../mutable_dict/" class="btn btn-neutral" title="Mutable dictionary"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -289,10 +279,10 @@ dictionary, substitute <code>MutableDictType</code> for <code>MutableType</code>
           <a href="https://github.com/dsbowen/sqlalchemy-mutable/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../mutable_list/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../mutable_dict/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../mutable_partial/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../convert/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
