@@ -37,14 +37,7 @@ class MutableListType(PickleType):
     lists as well as other objects. To force the column to be a list, 
     substitute `MutableListType` for `MutableType`.    
     """
-    @classmethod
-    def coerce(cls, key, obj):
-        """Object must be list"""
-        if isinstance(obj, cls):
-            return obj
-        if isinstance(obj, list):
-            return cls(obj)
-        return super().coerce(obj)
+    pass
 
 
 @Mutable.register_tracked_type(list)
@@ -59,6 +52,16 @@ class MutableList(Mutable, list):
     root : sqlalchemy.Mutable or None, default=None
         Root mutable object. If `None`, `self` is assumed to be the root.
     """
+    @classmethod
+    def coerce(cls, key, obj):
+        """Object must be list"""
+        if isinstance(obj, cls):
+            return obj
+        if isinstance(obj, list):
+            return cls(obj)
+        if not obj:
+            return cls([])
+        return cls([obj])
 
     # MutableList has the following responsibilities:
     # 1. Overload getstate and setstate for pickling
@@ -95,21 +98,41 @@ class MutableList(Mutable, list):
         self._pickling = False
     
     # 2. Register changes for list methods
+    def __iadd__(self, items):
+        self._changed()
+        return super().__iadd__(self._convert_iterable(items))
+
+    def __imul__(self, val):
+        self._changed()
+        return super().__imul__(val)
+
+    def __setitem__(self, key, items):
+        self._changed()
+        if isinstance(key, slice):
+            items = self._convert_iterable(items)
+        else:
+            items = self._convert_item(items)
+        return super().__setitem__(key, items)
+
     def append(self, item):
         self._changed()
-        super().append(self._convert_item(item))
+        return super().append(self._convert_item(item))
 
     def clear(self):
         self._changed()
-        super().clear()
+        return super().clear()
 
     def extend(self, iterable):
         self._changed()
-        super().extend(self._convert_iterable(iterable))
+        return super().extend(self._convert_iterable(iterable))
 
     def remove(self, obj):
         self._changed()
         return super().remove(obj)
+
+    def reverse(self):
+        self._changed()
+        return super().reverse()
 
     def pop(self, index):
         self._changed()
@@ -117,7 +140,7 @@ class MutableList(Mutable, list):
 
     def sort(self, cmp=None, key=None, reverse=False):
         self._changed()
-        super().sort(cmp=cmp, key=key, reverse=reverse)
+        return super().sort(cmp=cmp, key=key, reverse=reverse)
     
     # 3. Unshell models when returning list iterator
     def unshell(self):
