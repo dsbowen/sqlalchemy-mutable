@@ -1,5 +1,11 @@
 """# Mutable list
 
+Notes
+-----
+In the setup code, we use a `MutableType` database column, which handles 
+lists as well as other objects. To force the column to be a list, 
+substitute `MutableListType` or `MutableListJSONType` for `MutableType`. 
+
 Examples
 --------
 Make sure you have run the [setup code](setup.md).
@@ -26,16 +32,19 @@ Out:
 from .mutable import Mutable
 from .model_shell import ModelShell
 
-from sqlalchemy.types import PickleType
+from sqlalchemy.types import JSON, PickleType
 
 
 class MutableListType(PickleType):
     """
-    Mutable list database type.
+    Mutable list database type with pickle serialization.
+    """
+    pass
 
-    In the setup code, we use a `MutableType` database column, which handles 
-    lists as well as other objects. To force the column to be a list, 
-    substitute `MutableListType` for `MutableType`.    
+
+class MutableListJSONType(JSON):
+    """
+    Mutable list database type with JSON serialization.
     """
     pass
 
@@ -166,3 +175,4 @@ class MutableList(Mutable, list):
 
 
 MutableList.associate_with(MutableListType)
+MutableList.associate_with(MutableListJSONType)

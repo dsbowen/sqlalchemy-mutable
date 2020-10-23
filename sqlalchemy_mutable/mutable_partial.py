@@ -29,9 +29,14 @@ kwargs {'goodbye': 'moon'}
 from .mutable import Mutable
 
 
-class partial():
+class partial(Mutable):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)
+
     def __init__(self, func, *args, **kwargs):
+        super().__init__()
         assert callable(func), 'First argument must be callable'
+        self._python_type = None
         self.func, self.args, self.kwargs = func, list(args), kwargs
 
     def __call__(self, *args, **kwargs):
@@ -56,8 +61,10 @@ class partial():
             args_kwargs_str = kwargs_str
         return '<{}({})>'.format(self.func.__name__, args_kwargs_str)
 
+    @classmethod
+    def register(cls, func):
+        def add_function(*args, **kwargs):
+            return cls(func, *args, **kwargs)
 
-@Mutable.register_tracked_type(partial)
-class _MutablePartial(partial, Mutable):
-    def __init__(self, source=None, root=None):
-        super().__init__(source.func, *source.args, **source.kwargs)
+        setattr(cls, func.__name__, add_function)
+        return func

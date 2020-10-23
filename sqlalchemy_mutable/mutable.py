@@ -11,13 +11,14 @@ attributes and items.
 
 from .model_shell import ModelShell
 
-from sqlalchemy.types import PickleType
+from sqlalchemy.types import JSON, PickleType
 from sqlalchemy.ext.mutable import Mutable as MutableBase
 
 
 class MutableModelBase():
     """
-    Base class for database models with `MutableType` columns. This allows you to store and retrieve database models in `MutableType` columns.
+    Base class for database models with `MutableType` columns. This allows you
+    to store and retrieve database models in `MutableType` columns.
 
     Examples
     --------
@@ -61,7 +62,8 @@ class MutableModelBase():
 
 class MutableType(PickleType):
     """
-    Column type associated with `Mutable` objects. `MutableType` database columns may be set to:
+    Mutable column type with pickle serialization. `MutableType` columns may 
+    be set to:
 
     1. Coerced types. SQLAlchemy-Mutable automatically coerces common objects 
     such as `int`, `str`, and `datetime`.
@@ -69,6 +71,16 @@ class MutableType(PickleType):
     `dict` to mutable objects.
     3. Database models.
     """
+    pass
+
+
+class MutableJSONType(JSON):
+    """
+    Mutable column type with JSON serialization. `MutableJSONType` columns may
+    be set to lists, dictionaries, and common literals which are JSON 
+    serializable.
+    """
+    pass
 
 
 class Mutable(MutableBase):
@@ -179,8 +191,10 @@ class Mutable(MutableBase):
         """
         Decorator for tracked type registration.
         
-        The origin_type maps to a tracked_type. Objects of origin types will be converted to objects of tracked types when the convert method is invoked. Conversion occurs automatically on coersion and when 
-        setting attributes and items.
+        The origin_type maps to a tracked_type. Objects of origin types will 
+        be converted to objects of tracked types when the convert method is 
+        invoked. Conversion occurs automatically on coersion and when setting 
+        attributes and items.
 
         Parameters
         ----------
@@ -470,3 +484,4 @@ class Mutable(MutableBase):
 
     
 Mutable.associate_with(MutableType)
+Mutable.associate_with(MutableJSONType)

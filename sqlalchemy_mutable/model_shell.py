@@ -73,7 +73,7 @@ class ModelShell():
     ```
     """
     def __init__(self, model):
-        """Store model id (primary key) and class"""
+        """Store model primary key and class"""
         self.id = inspect(model).identity[0]
         self.model_class = model.__class__
         
