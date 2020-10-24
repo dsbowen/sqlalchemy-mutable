@@ -1,3 +1,4 @@
+from .manager import MutableManager
 from .html_attrs_dict import HTMLAttrs, HTMLAttrsType
 from .model_shell import Query
 from .mutable import Mutable, MutableType, MutableJSONType, MutableModelBase

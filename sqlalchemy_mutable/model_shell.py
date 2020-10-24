@@ -1,5 +1,7 @@
 """# Storing models"""
 
+from .manager import MutableManager
+
 from sqlalchemy import orm
 from sqlalchemy.inspection import inspect
 
@@ -74,7 +76,24 @@ class ModelShell():
     """
     def __init__(self, model):
         """Store model primary key and class"""
-        self.id = inspect(model).identity[0]
+        def get_id():
+            id = inspect(model).identity
+            if id is None:
+                # add and flush if the model does not have an identity
+                session = None
+                if MutableManager.session is not None:
+                    # for SQLAlchemy
+                    session = MutableManager.session
+                elif MutableManager.db is not None:
+                    # for Flask-SQLAlchemy
+                    session = MutableManager.db.session
+                assert session is not None
+                session.add(model)
+                session.flush([model])
+                id = inspect(model).identity
+            return id[0]
+
+        self.id = get_id()
         self.model_class = model.__class__
         
     def unshell(self):
