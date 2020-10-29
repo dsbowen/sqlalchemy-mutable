@@ -35,8 +35,7 @@ class HTMLAttrs(MutableDict):
         html attributes : str
         """
         def format_item(key, val):
-            if not val:
-                # val is empty string, None, False, etc.
+            if val is None or val is False or val == '':
                 return ''
             return key if val is True else '{}="{}"'.format(key, val)
 
