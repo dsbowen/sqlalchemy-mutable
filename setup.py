@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sqlalchemy-mutable",
-    version="0.0.10",
+    version="0.0.11",
     author="Dillon Bowen",
     author_email="dsbowen@wharton.upenn.edu",
     description="A powerful and flexible SQLAlchemy database type for nested mutation tracking",

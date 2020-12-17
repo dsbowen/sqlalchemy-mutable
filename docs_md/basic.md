@@ -43,7 +43,8 @@ attributes and items.
 
 
 
-Base class for database models with `MutableType` columns. This allows you to store and retrieve database models in `MutableType` columns.
+Base class for database models with `MutableType` columns. This allows you
+to store and retrieve database models in `MutableType` columns.
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
@@ -80,13 +81,34 @@ Out:
 
 
 
-Column type associated with `Mutable` objects. `MutableType` database columns may be set to:
+Mutable column type with pickle serialization. `MutableType` columns may
+be set to:
 
 1. Coerced types. SQLAlchemy-Mutable automatically coerces common objects
 such as `int`, `str`, and `datetime`.
 2. `Mutable` objects. SQLAlchemy-Mutable automatically converts `list` and
 `dict` to mutable objects.
 3. Database models.
+
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+        
+    </tbody>
+</table>
+
+
+
+
+
+##sqlalchemy_mutable.**MutableJSONType**
+
+
+
+Mutable column type with JSON serialization. `MutableJSONType` columns may
+be set to lists, dictionaries, and common literals which are JSON
+serializable.
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
@@ -148,7 +170,7 @@ Out:
 
 
 <p class="func-header">
-    <i></i> <b>register_coerced_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L122">[source]</a>
+    <i></i> <b>register_coerced_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L134">[source]</a>
 </p>
 
 Decorator for coerced type registration.
@@ -212,13 +234,15 @@ Out:
 
 
 <p class="func-header">
-    <i></i> <b>register_tracked_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L177">[source]</a>
+    <i></i> <b>register_tracked_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L189">[source]</a>
 </p>
 
 Decorator for tracked type registration.
 
-The origin_type maps to a tracked_type. Objects of origin types will be converted to objects of tracked types when the convert method is invoked. Conversion occurs automatically on coersion and when
-setting attributes and items.
+The origin_type maps to a tracked_type. Objects of origin types will
+be converted to objects of tracked types when the convert method is
+invoked. Conversion occurs automatically on coersion and when setting
+attributes and items.
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
@@ -286,6 +310,18 @@ Out:
 ```
 'hello, moon!'
 ```
+
+
+
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+        
+    </tbody>
+</table>
+
+
 
 
 

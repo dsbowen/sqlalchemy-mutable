@@ -29,6 +29,13 @@
     </tbody>
 </table>
 
+####Notes
+
+In the setup code, we use a `MutableType` database column, which handles
+dictionaries as well as other objects. To force the column to be a
+dictionary, substitute `MutableDictType` or `MutableDictJSONType` for
+`MutableType`.
+
 ####Examples
 
 Make sure you have run the [setup code](setup.md).
@@ -55,11 +62,25 @@ Out:
 
 
 
-Mutable dictionary database type.
+Mutable dictionary database type with pickle serialization.
 
-In the setup code, we use a `MutableType` database column, which handles
-dictionaries as well as other objects. To force the column to be a
-dictionary, substitute `MutableDictType` for `MutableType`.
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+        
+    </tbody>
+</table>
+
+
+
+
+
+##sqlalchemy_mutable.**MutableDictJSONType**
+
+
+
+Mutable dictionary database type with JSON serialization.
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
@@ -76,7 +97,7 @@ dictionary, substitute `MutableDictType` for `MutableType`.
 ##sqlalchemy_mutable.**MutableDict**
 
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L51">[source]</a>
+    <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L54">[source]</a>
 </p>
 
 Subclasses `dict`, and implements all `dict` methods.
@@ -106,7 +127,7 @@ Subclasses `dict`, and implements all `dict` methods.
 
 
 <p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L123">[source]</a>
+    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L134">[source]</a>
 </p>
 
 Call to force values to unshell. Normally this occurs automatically.
@@ -122,6 +143,18 @@ Call to force values to unshell. Normally this occurs automatically.
     Shallow copy of <code>self</code> where all <code>ModelShell</code> values are unshelled.
 </p></td>
 </tr>
+    </tbody>
+</table>
+
+
+
+
+
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+        
     </tbody>
 </table>
 

@@ -34,7 +34,7 @@
 ##sqlalchemy_mutable.model_shell.**Query**
 
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.model_shell.<b>Query</b>(<i>scoped_session</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L7">[source]</a>
+    <i>class</i> sqlalchemy_mutable.model_shell.<b>Query</b>(<i>scoped_session</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L9">[source]</a>
 </p>
 
 Query attribute in database model. Models which have a `query` attribute
@@ -69,7 +69,7 @@ object. See the [setup code](setup.md).
 ##sqlalchemy_mutable.model_shell.**ModelShell**
 
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.model_shell.<b>ModelShell</b>(<i>model</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L31">[source]</a>
+    <i>class</i> sqlalchemy_mutable.model_shell.<b>ModelShell</b>(<i>model</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L33">[source]</a>
 </p>
 
 The `ModelShell` stores (shells) and recovers (unshells) database
@@ -131,7 +131,7 @@ Out:
 
 
 <p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L80">[source]</a>
+    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L99">[source]</a>
 </p>
 
 Recover (unshell) a model.

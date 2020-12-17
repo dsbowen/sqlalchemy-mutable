@@ -77,44 +77,34 @@ kwargs {'goodbye': 'moon'}
 
 
 <p class="func-header">
-    <i></i> <b>register</b>(<i>cls, func</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L37">[source]</a>
+    <i></i> <b>__call__</b>(<i>self, *args, **kwargs</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L42">[source]</a>
 </p>
 
-Register a partial function.
+
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
     <col class="field-body" />
     <tbody valign="top">
-        <tr class="field">
-    <th class="field-name"><b>Parameters:</b></td>
-    <td class="field-body" width="100%"><b>func : <i>callable</i></b>
-<p class="attr">
-    
-</p></td>
-</tr>
-<tr class="field">
-    <th class="field-name"><b>Returns:</b></td>
-    <td class="field-body" width="100%"><b>func : <i>callable</i></b>
-<p class="attr">
-    <code>func</code> parameter.
-</p></td>
-</tr>
+        
     </tbody>
 </table>
 
-####Examples
 
-Make sure you have run the setup code.
 
-```python
-@partial.register
-def foo(*args, **kwargs):
-    print('args', args)
-    print('kwargs', kwargs)
-    return 0
 
-model = MyModel()
-model.mutable = partial.foo('hello world', goodbye='moon')
-model.mutable()
-```
+
+<p class="func-header">
+    <i></i> <b>register</b>(<i>cls, func</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L64">[source]</a>
+</p>
+
+
+
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+        
+    </tbody>
+</table>
+

@@ -82,7 +82,7 @@ class CoercedModelShell(Mutable, ModelShell):
 
 @Mutable.register_coerced_type(bool)
 class CoercedBool(Mutable):
-    def __new__(cls, source):
+    def __new__(cls, source=None):
         new = super().__new__(cls)
         new.value = source
         return new
@@ -105,7 +105,7 @@ class CoercedStr(Mutable, str):
 
 @Mutable.register_coerced_type(types.FunctionType)
 class CoercedFunc(Mutable):
-    def __new__(cls, source):
+    def __new__(cls, source=None):
         new = super().__new__(cls)
         new.func = source
         return new

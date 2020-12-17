@@ -147,7 +147,7 @@ class MutableList(Mutable, list):
         self._changed()
         return super().pop(index)
 
-    def sort(self, /, *, key=None, reverse=False):
+    def sort(self, key=None, reverse=False):
         self._changed()
         return super().sort(key=key, reverse=reverse)
     

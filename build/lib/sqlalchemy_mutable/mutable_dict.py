@@ -1,5 +1,12 @@
 """# Mutable dictionary
 
+Notes
+-----
+In the setup code, we use a `MutableType` database column, which handles 
+dictionaries as well as other objects. To force the column to be a 
+dictionary, substitute `MutableDictType` or `MutableDictJSONType` for 
+`MutableType`.
+
 Examples
 --------
 Make sure you have run the [setup code](setup.md).
@@ -26,25 +33,21 @@ Out:
 from .mutable import Mutable
 from .model_shell import ModelShell
 
-from sqlalchemy.types import PickleType
+from sqlalchemy.types import JSON, PickleType
 
 
 class MutableDictType(PickleType):
     """
-    Mutable dictionary database type.
-    
-    In the setup code, we use a `MutableType` database column, which handles 
-    dictionaries as well as other objects. To force the column to be a 
-    dictionary, substitute `MutableDictType` for `MutableType`.
+    Mutable dictionary database type with pickle serialization.
     """
-    @classmethod
-    def coerce(cls, key, obj):
-        """Object must be dict"""
-        if isinstance(obj, cls):
-            return obj
-        if isinstance(obj, dict):
-            return cls(obj)
-        return super().coerce(obj)
+    pass
+
+
+class MutableDictJSONType(JSON):
+    """
+    Mutable dictionary database type with JSON serialization.
+    """
+    pass
 
 
 
@@ -60,6 +63,14 @@ class MutableDict(Mutable, dict):
     root : sqlalchemy_mutable.Mutable or None, default=None
         Root mutable object. If `None`, `self` is assumed to be the root.
     """
+    @classmethod
+    def coerce(cls, key, obj):
+        """Object must be dict"""
+        if isinstance(obj, cls):
+            return obj
+        if isinstance(obj, dict):
+            return cls(obj)
+        return super().coerce(obj)
 
     # MutableDict has the following responsibilities:
     # 1. Overload getstate and setstate for pickling
@@ -136,3 +147,4 @@ class MutableDict(Mutable, dict):
 
 
 MutableDict.associate_with(MutableDictType)
+MutableDict.associate_with(MutableDictJSONType)

@@ -29,6 +29,12 @@
     </tbody>
 </table>
 
+####Notes
+
+In the setup code, we use a `MutableType` database column, which handles
+lists as well as other objects. To force the column to be a list,
+substitute `MutableListType` or `MutableListJSONType` for `MutableType`.
+
 ####Examples
 
 Make sure you have run the [setup code](setup.md).
@@ -55,11 +61,25 @@ Out:
 
 
 
-Mutable list database type.
+Mutable list database type with pickle serialization.
 
-In the setup code, we use a `MutableType` database column, which handles
-lists as well as other objects. To force the column to be a list,
-substitute `MutableListType` for `MutableType`.
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+        
+    </tbody>
+</table>
+
+
+
+
+
+##sqlalchemy_mutable.**MutableListJSONType**
+
+
+
+Mutable list database type with JSON serialization.
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
@@ -76,7 +96,7 @@ substitute `MutableListType` for `MutableType`.
 ##sqlalchemy_mutable.**MutableList**
 
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.<b>MutableList</b>(<i>source=[], root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L50">[source]</a>
+    <i>class</i> sqlalchemy_mutable.<b>MutableList</b>(<i>source=[], root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L52">[source]</a>
 </p>
 
 Subclasses `list`, and implements all `list` methods.
@@ -106,7 +126,7 @@ Subclasses `list`, and implements all `list` methods.
 
 
 <p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L123">[source]</a>
+    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L155">[source]</a>
 </p>
 
 Call to force values to unshell. Normally this occurs automatically.
@@ -122,6 +142,18 @@ Call to force values to unshell. Normally this occurs automatically.
     Shallow copy of <code>self</code> where all <code>ModelShell</code> items are unshelled.
 </p></td>
 </tr>
+    </tbody>
+</table>
+
+
+
+
+
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+        
     </tbody>
 </table>
 
