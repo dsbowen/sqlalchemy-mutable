@@ -147,9 +147,9 @@ class MutableList(Mutable, list):
         self._changed()
         return super().pop(index)
 
-    def sort(self, cmp=None, key=None, reverse=False):
+    def sort(self, /, *, key=None, reverse=False):
         self._changed()
-        return super().sort(cmp=cmp, key=key, reverse=reverse)
+        return super().sort(key=key, reverse=reverse)
     
     # 3. Unshell models when returning list iterator
     def unshell(self):
