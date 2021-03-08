@@ -12,6 +12,7 @@ nav:
   - Mutable list: mutable_list.md
   - Mutable dictionary: mutable_dict.md
   - Mutable partial function: mutable_partial.md
+  - Mutable tuple: mutable_tuple.md
   - Advanced type conversion: convert.md
   - Contribute: contribute.md
   - Change log: changelog.md

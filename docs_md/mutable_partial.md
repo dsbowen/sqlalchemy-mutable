@@ -95,7 +95,7 @@ kwargs {'goodbye': 'moon'}
 
 
 <p class="func-header">
-    <i></i> <b>register</b>(<i>cls, func</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L64">[source]</a>
+    <i></i> <b>register</b>(<i>cls, func</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L65">[source]</a>
 </p>
 
 

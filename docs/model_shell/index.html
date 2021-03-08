@@ -95,6 +95,10 @@
                     </li>
                 </ul>
                 <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../mutable_tuple/">Mutable tuple</a>
+                    </li>
+                </ul>
+                <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../convert/">Advanced type conversion</a>
                     </li>
                 </ul>
@@ -162,7 +166,6 @@
         border-radius: 0.1em
     }
 </style>
-
 <h1 id="storing-models">Storing models</h1>
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
@@ -174,7 +177,7 @@
 
 <h2 id="sqlalchemy_mutablemodel_shellquery">sqlalchemy_mutable.model_shell.<strong>Query</strong></h2>
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.model_shell.<b>Query</b>(<i>scoped_session</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L7">[source]</a>
+    <i>class</i> sqlalchemy_mutable.model_shell.<b>Query</b>(<i>scoped_session</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L9">[source]</a>
 </p>
 
 <p>Query attribute in database model. Models which have a <code>query</code> attribute
@@ -203,7 +206,7 @@ object. See the <a href="../setup/">setup code</a>.</p>
 
 <h2 id="sqlalchemy_mutablemodel_shellmodelshell">sqlalchemy_mutable.model_shell.<strong>ModelShell</strong></h2>
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.model_shell.<b>ModelShell</b>(<i>model</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L31">[source]</a>
+    <i>class</i> sqlalchemy_mutable.model_shell.<b>ModelShell</b>(<i>model</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L33">[source]</a>
 </p>
 
 <p>The <code>ModelShell</code> stores (shells) and recovers (unshells) database
@@ -241,7 +244,7 @@ it to the session and commit or flush it.</li>
 </ol>
 <h4 id="examples">Examples</h4>
 <p>Make sure you have run the <a href="../setup/">setup code</a>.</p>
-<pre><code class="python">from sqlalchemy_mutable.model_shell import ModelShell
+<pre><code class="language-python">from sqlalchemy_mutable.model_shell import ModelShell
 
 model = MyModel()
 session.add(model)
@@ -249,14 +252,12 @@ session.commit()
 shell = ModelShell(model)
 shell.unshell()
 </code></pre>
-
 <p>Out:</p>
 <pre><code>&lt;__main__.MyModel at 0x7f6bd9936c50&gt;
 </code></pre>
-
 <h4 id="methods">Methods</h4>
 <p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L80">[source]</a>
+    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/model_shell.py#L99">[source]</a>
 </p>
 
 <p>Recover (unshell) a model.</p>

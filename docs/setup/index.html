@@ -87,6 +87,10 @@
                     </li>
                 </ul>
                 <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../mutable_tuple/">Mutable tuple</a>
+                    </li>
+                </ul>
+                <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../convert/">Advanced type conversion</a>
                     </li>
                 </ul>
@@ -136,7 +140,7 @@
                 <h1 id="setup">Setup</h1>
 <p>All examples in the documentation assume you have run the following setup code for <a href="https://www.sqlalchemy.org/">SQLAlchemy</a> or <a href="https://flask-sqlalchemy.palletsprojects.com/en/2.x/">Flask-SQLAlchemy</a>.</p>
 <h2 id="sqlalchemy">SQLAlchemy</h2>
-<pre><code class="python">from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase, Query
+<pre><code class="language-python">from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase, Query
 
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -169,9 +173,8 @@ class MyModel(MutableModelBase, Base):
 # create the database (standard)
 Base.metadata.create_all(engine)
 </code></pre>
-
 <h2 id="flask-sqlalchemy">Flask-SQLAlchemy</h2>
-<pre><code class="python">from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase
+<pre><code class="language-python">from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy

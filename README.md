@@ -1,9 +1,11 @@
+# SQLAlchemy-Mutable
+
 SQLAlchemy-Mutable aspires to be the most powerful and flexible [SQLAlchemy](https://www.sqlalchemy.org) database column type.
 
 Its features include:
 
 1. Nested mutation tracking
-2. Mutation tracking for `list` and `dict`
+2. Mutation tracking for `list`, `dict`, and `tuple`
 3. Support for storing database models in mutable columns
 4. Support for common literals and `datetime` objects
 5. Support for custom mutable classes

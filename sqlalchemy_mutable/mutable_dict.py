@@ -70,7 +70,7 @@ class MutableDict(Mutable, dict):
             return obj
         if isinstance(obj, dict):
             return cls(obj)
-        return super().coerce(obj)
+        return super().coerce(cls, obj)
 
     # MutableDict has the following responsibilities:
     # 1. Overload getstate and setstate for pickling

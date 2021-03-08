@@ -335,7 +335,7 @@ class Mutable(MutableBase):
     
     def _convert_iterable(self, iterable):
         """Convert items in iterable to Mutable objects"""
-        return (self._convert_item(item) for item in iterable)
+        return type(iterable)((self._convert_item(item) for item in iterable))
     
     def _convert_mapping(self, mapping):
         """Convert items in dictionary key:item mapping to Mutable objects"""

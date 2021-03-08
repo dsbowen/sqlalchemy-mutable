@@ -97,7 +97,7 @@ Mutable dictionary database type with JSON serialization.
 ##sqlalchemy_mutable.**MutableDict**
 
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L54">[source]</a>
+    <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L55">[source]</a>
 </p>
 
 Subclasses `dict`, and implements all `dict` methods.

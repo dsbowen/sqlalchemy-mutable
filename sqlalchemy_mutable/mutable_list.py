@@ -115,6 +115,11 @@ class MutableList(Mutable, list):
         self._changed()
         return super().__imul__(val)
 
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            return self.__class__(super().__getitem__(key))
+        return super().__getitem__(key)
+
     def __setitem__(self, key, items):
         self._changed()
         if isinstance(key, slice):

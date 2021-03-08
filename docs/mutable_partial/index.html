@@ -85,11 +85,13 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#methods">Methods</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#examples_1">Examples</a>
-    </li>
         </ul>
     </li>
     </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../mutable_tuple/">Mutable tuple</a>
                     </li>
                 </ul>
                 <ul>
@@ -160,7 +162,6 @@
         border-radius: 0.1em
     }
 </style>
-
 <h1 id="mutable-partial">Mutable partial</h1>
 <p>This is analogous to <code>functools.partial</code>.</p>
 <table class="docutils field-list field-table" frame="void" rules="none">
@@ -173,7 +174,7 @@
 
 <h4 id="examples">Examples</h4>
 <p>Make sure you have run the <a href="../setup/">setup code</a>.</p>
-<pre><code class="python">def foo(*args, **kwargs):
+<pre><code class="language-python">def foo(*args, **kwargs):
     print('args', args)
     print('kwargs', kwargs)
     return 0
@@ -182,13 +183,11 @@ model = MyModel()
 model.mutable = partial(foo, 'hello world', goodbye='moon')
 model.mutable()
 </code></pre>
-
 <p>Out:</p>
 <pre><code>args ('hello world',)
 kwargs {'goodbye': 'moon'}
 0
 </code></pre>
-
 <h2 id="sqlalchemy_mutablepartial">sqlalchemy_mutable.<strong>partial</strong></h2>
 <p class="func-header">
     <i>class</i> sqlalchemy_mutable.<b>partial</b>(<i>func, *args, **kwargs</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L32">[source]</a>
@@ -204,43 +203,28 @@ kwargs {'goodbye': 'moon'}
 
 <h4 id="methods">Methods</h4>
 <p class="func-header">
-    <i></i> <b>register</b>(<i>cls, func</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L37">[source]</a>
+    <i></i> <b>__call__</b>(<i>self, *args, **kwargs</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L42">[source]</a>
 </p>
 
-<p>Register a partial function.</p>
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
     <col class="field-body" />
     <tbody valign="top">
-        <tr class="field">
-    <th class="field-name"><b>Parameters:</b></td>
-    <td class="field-body" width="100%"><b>func : <i>callable</i></b>
-<p class="attr">
 
-</p></td>
-</tr>
-<tr class="field">
-    <th class="field-name"><b>Returns:</b></td>
-    <td class="field-body" width="100%"><b>func : <i>callable</i></b>
-<p class="attr">
-    <code>func</code> parameter.
-</p></td>
-</tr>
     </tbody>
 </table>
 
-<h4 id="examples_1">Examples</h4>
-<p>Make sure you have run the setup code.</p>
-<pre><code class="python">@partial.register
-def foo(*args, **kwargs):
-    print('args', args)
-    print('kwargs', kwargs)
-    return 0
+<p class="func-header">
+    <i></i> <b>register</b>(<i>cls, func</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_partial.py#L65">[source]</a>
+</p>
 
-model = MyModel()
-model.mutable = partial.foo('hello world', goodbye='moon')
-model.mutable()
-</code></pre>
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+
+    </tbody>
+</table>
               
             </div>
           </div>
@@ -248,7 +232,7 @@ model.mutable()
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../convert/" class="btn btn-neutral float-right" title="Advanced type conversion">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../mutable_tuple/" class="btn btn-neutral float-right" title="Mutable tuple">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../mutable_dict/" class="btn btn-neutral" title="Mutable dictionary"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -282,7 +266,7 @@ model.mutable()
         <span><a href="../mutable_dict/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../convert/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../mutable_tuple/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

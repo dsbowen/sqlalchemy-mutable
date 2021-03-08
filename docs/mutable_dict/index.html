@@ -75,9 +75,13 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Mutable dictionary</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#sqlalchemy_mutablemutabledicttype">sqlalchemy_mutable.MutableDictType</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sqlalchemy_mutablemutabledictjsontype">sqlalchemy_mutable.MutableDictJSONType</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#sqlalchemy_mutablemutabledict">sqlalchemy_mutable.MutableDict</a>
         <ul>
@@ -90,6 +94,10 @@
                 </ul>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../mutable_partial/">Mutable partial function</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../mutable_tuple/">Mutable tuple</a>
                     </li>
                 </ul>
                 <ul>
@@ -160,7 +168,6 @@
         border-radius: 0.1em
     }
 </style>
-
 <h1 id="mutable-dictionary">Mutable dictionary</h1>
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
@@ -170,9 +177,14 @@
     </tbody>
 </table>
 
+<h4 id="notes">Notes</h4>
+<p>In the setup code, we use a <code>MutableType</code> database column, which handles
+dictionaries as well as other objects. To force the column to be a
+dictionary, substitute <code>MutableDictType</code> or <code>MutableDictJSONType</code> for
+<code>MutableType</code>.</p>
 <h4 id="examples">Examples</h4>
 <p>Make sure you have run the <a href="../setup/">setup code</a>.</p>
-<pre><code class="python">model = MyModel()
+<pre><code class="language-python">model = MyModel()
 model.mutable = {}
 session.add(model)
 session.commit()
@@ -182,16 +194,21 @@ model.mutable['hello'] = 'world'
 session.commit()
 model.mutable
 </code></pre>
-
 <p>Out:</p>
 <pre><code>{'hello': 'world'}
 </code></pre>
-
 <h2 id="sqlalchemy_mutablemutabledicttype">sqlalchemy_mutable.<strong>MutableDictType</strong></h2>
-<p>Mutable dictionary database type.</p>
-<p>In the setup code, we use a <code>MutableType</code> database column, which handles
-dictionaries as well as other objects. To force the column to be a
-dictionary, substitute <code>MutableDictType</code> for <code>MutableType</code>.</p>
+<p>Mutable dictionary database type with pickle serialization.</p>
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+
+    </tbody>
+</table>
+
+<h2 id="sqlalchemy_mutablemutabledictjsontype">sqlalchemy_mutable.<strong>MutableDictJSONType</strong></h2>
+<p>Mutable dictionary database type with JSON serialization.</p>
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
     <col class="field-body" />
@@ -202,7 +219,7 @@ dictionary, substitute <code>MutableDictType</code> for <code>MutableType</code>
 
 <h2 id="sqlalchemy_mutablemutabledict">sqlalchemy_mutable.<strong>MutableDict</strong></h2>
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L51">[source]</a>
+    <i>class</i> sqlalchemy_mutable.<b>MutableDict</b>(<i>source={}, root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L55">[source]</a>
 </p>
 
 <p>Subclasses <code>dict</code>, and implements all <code>dict</code> methods.</p>
@@ -226,7 +243,7 @@ dictionary, substitute <code>MutableDictType</code> for <code>MutableType</code>
 
 <h4 id="methods">Methods</h4>
 <p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L123">[source]</a>
+    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_dict.py#L134">[source]</a>
 </p>
 
 <p>Call to force values to unshell. Normally this occurs automatically.</p>
@@ -241,6 +258,14 @@ dictionary, substitute <code>MutableDictType</code> for <code>MutableType</code>
     Shallow copy of <code>self</code> where all <code>ModelShell</code> values are unshelled.
 </p></td>
 </tr>
+    </tbody>
+</table>
+
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+
     </tbody>
 </table>
 

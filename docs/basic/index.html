@@ -67,6 +67,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#sqlalchemy_mutablemutabletype">sqlalchemy_mutable.MutableType</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sqlalchemy_mutablemutablejsontype">sqlalchemy_mutable.MutableJSONType</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#sqlalchemy_mutablemutable">sqlalchemy_mutable.Mutable</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#examples_1">Examples</a>
@@ -102,6 +104,10 @@
                 </ul>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../mutable_partial/">Mutable partial function</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../mutable_tuple/">Mutable tuple</a>
                     </li>
                 </ul>
                 <ul>
@@ -172,7 +178,6 @@
         border-radius: 0.1em
     }
 </style>
-
 <h1 id="basic-objects">Basic objects</h1>
 <p>The basic objects of SQLAlchemy-Mutable are:</p>
 <ol>
@@ -191,7 +196,8 @@ attributes and items.</li>
 </table>
 
 <h2 id="sqlalchemy_mutablemutablemodelbase">sqlalchemy_mutable.<strong>MutableModelBase</strong></h2>
-<p>Base class for database models with <code>MutableType</code> columns. This allows you to store and retrieve database models in <code>MutableType</code> columns.</p>
+<p>Base class for database models with <code>MutableType</code> columns. This allows you
+to store and retrieve database models in <code>MutableType</code> columns.</p>
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
     <col class="field-body" />
@@ -202,7 +208,7 @@ attributes and items.</li>
 
 <h4 id="examples">Examples</h4>
 <p>Make sure you have run the <a href="../setup/">setup code</a>.</p>
-<pre><code class="python">model0 = MyModel()
+<pre><code class="language-python">model0 = MyModel()
 model1 = MyModel()
 session.add_all([model0, model1])
 session.commit()
@@ -211,13 +217,12 @@ model0.mutable = model1
 # this would not retrieve `model1`
 model0.mutable
 </code></pre>
-
 <p>Out:</p>
 <pre><code>&lt;__main__.MyModel at 0x7f6bd9936668&gt;
 </code></pre>
-
 <h2 id="sqlalchemy_mutablemutabletype">sqlalchemy_mutable.<strong>MutableType</strong></h2>
-<p>Column type associated with <code>Mutable</code> objects. <code>MutableType</code> database columns may be set to:</p>
+<p>Mutable column type with pickle serialization. <code>MutableType</code> columns may
+be set to:</p>
 <ol>
 <li>Coerced types. SQLAlchemy-Mutable automatically coerces common objects
 such as <code>int</code>, <code>str</code>, and <code>datetime</code>.</li>
@@ -225,6 +230,18 @@ such as <code>int</code>, <code>str</code>, and <code>datetime</code>.</li>
 <code>dict</code> to mutable objects.</li>
 <li>Database models.</li>
 </ol>
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+
+    </tbody>
+</table>
+
+<h2 id="sqlalchemy_mutablemutablejsontype">sqlalchemy_mutable.<strong>MutableJSONType</strong></h2>
+<p>Mutable column type with JSON serialization. <code>MutableJSONType</code> columns may
+be set to lists, dictionaries, and common literals which are JSON
+serializable.</p>
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
     <col class="field-body" />
@@ -252,7 +269,7 @@ such as <code>int</code>, <code>str</code>, and <code>datetime</code>.</li>
 
 <h4 id="examples_1">Examples</h4>
 <p>Make sure you have run the <a href="../setup/">setup code</a>.</p>
-<pre><code class="python">model = MyModel()
+<pre><code class="language-python">model = MyModel()
 session.add(model)
 model.mutable.nested_mutable = Mutable()
 session.commit()
@@ -262,14 +279,12 @@ model.mutable.nested_mutable.greeting = 'hello world'
 session.commit()
 model.mutable.nested_mutable.greeting
 </code></pre>
-
 <p>Out:</p>
 <pre><code>'hello, world!'
 </code></pre>
-
 <h4 id="methods">Methods</h4>
 <p class="func-header">
-    <i></i> <b>register_coerced_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L122">[source]</a>
+    <i></i> <b>register_coerced_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L135">[source]</a>
 </p>
 
 <p>Decorator for coerced type registration.</p>
@@ -302,7 +317,7 @@ converted to a coerced type.</p>
 origin types will not be coerced with the <code>_convert</code> method is invoked.</p>
 <h4 id="examples_2">Examples</h4>
 <p>Make sure you have run the <a href="../setup/">setup code</a>.</p>
-<pre><code class="python">class MyClass():
+<pre><code class="language-python">class MyClass():
     def greet(self, name='world'):
         return 'hello, {}!'.format(name)
 
@@ -316,18 +331,18 @@ model = MyModel()
 model.mutable = MyClass()
 model.mutable.greet()
 </code></pre>
-
 <p>Out:</p>
 <pre><code>'hello, world!'
 </code></pre>
-
 <p class="func-header">
-    <i></i> <b>register_tracked_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L177">[source]</a>
+    <i></i> <b>register_tracked_type</b>(<i>cls, origin_type</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable.py#L190">[source]</a>
 </p>
 
 <p>Decorator for tracked type registration.</p>
-<p>The origin_type maps to a tracked_type. Objects of origin types will be converted to objects of tracked types when the convert method is invoked. Conversion occurs automatically on coersion and when
-setting attributes and items.</p>
+<p>The origin_type maps to a tracked_type. Objects of origin types will
+be converted to objects of tracked types when the convert method is
+invoked. Conversion occurs automatically on coersion and when setting
+attributes and items.</p>
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />
     <col class="field-body" />
@@ -351,7 +366,7 @@ setting attributes and items.</p>
 
 <h4 id="examples_3">Examples</h4>
 <p>Make sure you have run the <a href="../setup/">setup code</a>.</p>
-<pre><code class="python">class MyClass():
+<pre><code class="language-python">class MyClass():
     def __init__(self, name):
         self.name = name
 
@@ -385,10 +400,16 @@ model.mutable.object.name = 'moon'
 session.commit()
 model.mutable.object.greet()
 </code></pre>
-
 <p>Out:</p>
 <pre><code>'hello, moon!'
 </code></pre>
+<table class="docutils field-list field-table" frame="void" rules="none">
+    <col class="field-name" />
+    <col class="field-body" />
+    <tbody valign="top">
+
+    </tbody>
+</table>
 
 <table class="docutils field-list field-table" frame="void" rules="none">
     <col class="field-name" />

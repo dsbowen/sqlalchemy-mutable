@@ -93,6 +93,10 @@
                     </li>
                 </ul>
                 <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="mutable_tuple/">Mutable tuple</a>
+                    </li>
+                </ul>
+                <ul>
                     <li class="toctree-l1"><a class="reference internal" href="convert/">Advanced type conversion</a>
                     </li>
                 </ul>
@@ -144,7 +148,7 @@
 <p>Its features include:</p>
 <ol>
 <li>Nested mutation tracking</li>
-<li>Mutation tracking for <code>list</code> and <code>dict</code></li>
+<li>Mutation tracking for <code>list</code>, <code>dict</code>, and <code>tuple</code></li>
 <li>Support for storing database models in mutable columns</li>
 <li>Support for common literals and <code>datetime</code> objects</li>
 <li>Support for custom mutable classes</li>
@@ -154,10 +158,9 @@
 <h2 id="installation">Installation</h2>
 <pre><code>$ pip install sqlalchemy-mutable
 </code></pre>
-
 <h2 id="quickstart">Quickstart</h2>
 <p>Setup:</p>
-<pre><code class="python">from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase, Query
+<pre><code class="language-python">from sqlalchemy_mutable import Mutable, MutableType, MutableModelBase, Query
 
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -190,9 +193,8 @@ class MyModel(MutableModelBase, Base):
 # create the database (standard)
 Base.metadata.create_all(engine)
 </code></pre>
-
 <p>Examples:</p>
-<pre><code class="python">model = MyModel()
+<pre><code class="language-python">model = MyModel()
 session.add(model)
 session.commit()
 
@@ -220,14 +222,12 @@ model.mutable = 'hello world'
 session.commit()
 print(model.mutable)
 </code></pre>
-
 <p>Out:</p>
 <pre><code>hello world
 {'greet': ['hello world']}
 &lt;__main__.MyModel object at 0x7fe54a2d7b00&gt;
 hello world
 </code></pre>
-
 <h2 id="citation">Citation</h2>
 <pre><code>@software{bowen2020sqlalchemy-mutable,
   author = {Dillon Bowen},
@@ -236,7 +236,6 @@ hello world
   date = {2020-10-16},
 }
 </code></pre>
-
 <h2 id="license">License</h2>
 <p>Users must cite this package in any publications which use it.</p>
 <p>It is licensed with the MIT <a href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/LICENSE">License</a>.</p>
@@ -296,6 +295,6 @@ hello world
 </html>
 
 <!--
-MkDocs version : 1.1.1
-Build Date UTC : 2020-10-16 17:45:27.625531+00:00
+MkDocs version : 1.1.2
+Build Date UTC : 2021-03-08 17:46:07.242118+00:00
 -->

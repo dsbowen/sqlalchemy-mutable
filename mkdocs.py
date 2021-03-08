@@ -45,6 +45,11 @@ for obj in soup.objects:
 soup.import_path = 'sqlalchemy_mutable'
 compile_md(soup, compiler='sklearn', outfile='docs_md/mutable_dict.md')
 
+path = 'sqlalchemy_mutable/mutable_tuple.py'
+soup = PySoup(path=path, parser='sklearn', src_href=src_href)
+soup.import_path = 'sqlalchemy_mutable'
+compile_md(soup, compiler='sklearn', outfile='docs_md/mutable_tuple.md')
+
 path = 'sqlalchemy_mutable/mutable_partial.py'
 soup = PySoup(path=path, parser='sklearn', src_href=src_href)
 soup.import_path = 'sqlalchemy_mutable'

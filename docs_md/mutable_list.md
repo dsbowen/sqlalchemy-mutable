@@ -96,7 +96,7 @@ Mutable list database type with JSON serialization.
 ##sqlalchemy_mutable.**MutableList**
 
 <p class="func-header">
-    <i>class</i> sqlalchemy_mutable.<b>MutableList</b>(<i>source=[], root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L52">[source]</a>
+    <i>class</i> sqlalchemy_mutable.<b>MutableList</b>(<i>source=[], root=None</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L53">[source]</a>
 </p>
 
 Subclasses `list`, and implements all `list` methods.
@@ -126,7 +126,7 @@ Subclasses `list`, and implements all `list` methods.
 
 
 <p class="func-header">
-    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L155">[source]</a>
+    <i></i> <b>unshell</b>(<i>self</i>) <a class="src-href" target="_blank" href="https://github.com/dsbowen/sqlalchemy-mutable/blob/master/sqlalchemy_mutable/mutable_list.py#L160">[source]</a>
 </p>
 
 Call to force values to unshell. Normally this occurs automatically.
