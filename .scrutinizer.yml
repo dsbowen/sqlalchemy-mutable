@@ -7,5 +7,5 @@ build:
                 override: [py-scrutinizer-run]
 
 filter:
-  exclude_paths:
+  excluded_paths:
     - "tests/"
