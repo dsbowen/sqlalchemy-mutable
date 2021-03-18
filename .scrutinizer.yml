@@ -1,11 +1,24 @@
 build:
-    nodes:
-        analysis:
-            project_setup:
-                override: true
-            tests:
-                override: [py-scrutinizer-run]
+  nodes:
+    analysis:
+      project_setup:
+        override: true
+      tests:
+        override: [py-scrutinizer-run]
+    coverage:
+      tests:
+        override:
+          - command: "coverage run -m unittest discover -s tests"
+            coverage:
+              file: ".coverage"
+              config_file: ".coveragerc"
+              format: "py-cc"
+
+  environment:
+    python:
+      version: "3.6.13"
 
 filter:
   excluded_paths:
     - "tests/"
+    - "build/"
