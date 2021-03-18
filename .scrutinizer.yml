@@ -1,12 +1,14 @@
 build:
   nodes:
-    analysis:
-      project_setup:
-        override: true
-      tests:
-        override: [py-scrutinizer-run]
+    # analysis:
+    #   project_setup:
+    #     override: true
+    #   tests:
+    #     override: [py-scrutinizer-run]
     coverage:
       tests:
+        before:
+          - pip install coverage
         override:
           - command: "coverage run -m unittest discover -s tests"
             coverage:
@@ -19,6 +21,5 @@ build:
       version: "3.6.13"
 
 filter:
-  excluded_paths:
-    - "tests/"
-    - "build/"
+  paths:
+    - "sqlalchemy_mutable/*"
